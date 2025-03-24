@@ -1,0 +1,28 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+      "jsx": "react",
+      "strict": true,
+      "baseUrl": "./",
+      "paths": {
+        "@src/*": ["./src/*"],
+        "@assets/*": ["./assets/*"],
+        "@components/*": ["./components/*"],
+        "@src/config/*": ["./src/config/*"],
+        "@hooks/*": ["./hooks/*"],
+        "@routes/*": ["./routes/*"],
+        "@screens/*": ["./screens/*"],
+        "@services/*": ["./services/*"],
+        "@styles/*": ["./styles/*"],
+        "@utils/*": ["./utils/*"],
+        "@env": ["@types/env.d.ts"],
+      },
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true
+    },
+    
+    "include": [
+    "src/**/*",
+    "src/styles/styled.d.ts"
+  ]
+}

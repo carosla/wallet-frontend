@@ -1,0 +1,1 @@
+export { Recebimentos } from './Recebimentos';

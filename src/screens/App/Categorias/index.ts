@@ -1,0 +1,1 @@
+export { Categorias } from './Categorias';
