@@ -1,9 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Defina a URL do backend
-const API_URL = "http://10.0.2.2:3000/api/auth"; // Se estiver testando no emulador Android
-// Se estiver usando um dispositivo físico, substitua 10.0.2.2 pelo IP local do seu computador.
+import { API_URL } from "@env";
 
 export const login = async (email: string, senha: string) => {
   try {

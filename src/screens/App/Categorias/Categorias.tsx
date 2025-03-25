@@ -10,6 +10,7 @@ import { Header } from "@src/components/Header/Header";
 import Edit from '../../../assets/edit.png';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
+import { API_URL } from "@env";
 
 export const Categorias = () => {
   const navigation = useNavigation();
@@ -38,7 +39,7 @@ export const Categorias = () => {
 
         // Enviar dados para o backend (API)
         const response = await axios.post(
-          'http://localhost:3000/api/categorias',
+          `${API_URL}/api/categoria`,
           { categoria },
           {
             headers: {

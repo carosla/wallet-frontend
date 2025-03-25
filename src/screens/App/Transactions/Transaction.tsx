@@ -16,6 +16,7 @@ import {
     AmountTransaction,
     ButtonGoBack,
 } from './styles';
+import { API_URL } from '@env';
 
 interface Transaction {
     transacao_id: string;
@@ -36,7 +37,7 @@ export const Transaction = () => {
         const fetchTransactions = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                const response = await axios.get('https://localhost:3000/api/transacao', {
+                const response = await axios.get(`${API_URL}/api/transacao`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setTransactions(response.data);

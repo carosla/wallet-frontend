@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Cria uma instância do Axios
 const api = axios.create({
-  baseURL: "http://localhost:3000/api", // Substitua pelo URL do seu backend
+  baseURL: "https://wallet-backend-2rmo.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },

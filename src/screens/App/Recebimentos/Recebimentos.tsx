@@ -21,6 +21,7 @@ import theme from "../../../styles/theme";
 import { Header } from "../../../components/Header/Header";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "@env";
 
 export const Recebimentos = () => {
   const navigation = useNavigation();
@@ -50,7 +51,7 @@ export const Recebimentos = () => {
     const fetchCategorias = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/categorias"
+          `${API_URL}/api/categorias`
         );
         console.log("Categorias retornadas:", response.data); // Verifique o formato da resposta aqui
 
@@ -83,7 +84,7 @@ export const Recebimentos = () => {
   
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/transacao",
+        `${API_URL}/api/transacao`,
         {
           categoria_id: selectedCategoria,
           valor,

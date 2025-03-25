@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_URL } from "@env";
 
 import { KeyboardAvoidingView, Text } from "react-native";
 
@@ -46,7 +47,7 @@ const Login: React.FC = () => {
         try {
           // Enviar a requisição para o backend com as credenciais
           const response = await axios.post(
-            "http://localhost:3000/api/auth/login", // URL do seu backend
+            `${API_URL}/api/auth/login`, // URL do backend
             { email, password: senha }
           );
     
