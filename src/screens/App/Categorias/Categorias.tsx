@@ -39,7 +39,7 @@ export const Categorias = () => {
 
         // Enviar dados para o backend (API)
         const response = await axios.post(
-          `${API_URL}/api/categoria`,
+          `${API_URL}/api/categorias`,
           { categoria },
           {
             headers: {
