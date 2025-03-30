@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   Container,
   ButtonText,
@@ -24,6 +24,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
 
 export const Recebimentos = () => {
+  // Função para converter a data de dd-mm-yyyy para yyyy-mm-dd
+  const convertDateToTimestamp = (date: string) => {
+    const [day, month, year] = date.split("-"); // Separar os valores de dia, mês e ano
+    return `${year}-${month}-${day}`; // Retornar a data no formato yyyy-mm-dd
+  };
+
   const navigation = useNavigation();
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
@@ -35,7 +41,6 @@ export const Recebimentos = () => {
     null
   );
   const [token, setToken] = useState<string | null>(null);
-  
 
   // Função para buscar o token armazenado
   useEffect(() => {
@@ -50,9 +55,7 @@ export const Recebimentos = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/api/categorias`
-        );
+        const response = await axios.get(`${API_URL}/api/categorias`);
         console.log("Categorias retornadas:", response.data); // Verifique o formato da resposta aqui
 
         // Garantir que a resposta esteja no formato esperado
@@ -73,22 +76,24 @@ export const Recebimentos = () => {
 
   // Função para enviar os dados
   const handleSendData = async () => {
+    // Converter a data para o formato yyyy-mm-dd
+    const formattedDate = convertDateToTimestamp(data);
     // Verificando os dados antes de enviar
     console.log("Enviando dados para o backend:", {
       categoria_id: selectedCategoria,
       valor,
-      data,
+      data: formattedDate,
       tipo_transacao: "entrada", // Sempre "entrada" neste caso
       descricao,
     });
-  
+
     try {
       const response = await axios.post(
         `${API_URL}/api/transacao`,
         {
           categoria_id: selectedCategoria,
           valor,
-          data,
+          data: formattedDate,
           tipo_transacao: "entrada",
           descricao,
         },
@@ -104,7 +109,7 @@ export const Recebimentos = () => {
       console.error("Erro na requisição:", error.response.data); // Exibe o erro do backend
     }
   };
-  
+
   return (
     <>
       <ContainerHeader>
@@ -140,7 +145,7 @@ export const Recebimentos = () => {
 
         <ContainerAtributos>
           <InputDescricao
-            placeholder="Data (ex: 2025-03-16)"
+            placeholder="Data (ex: 01-12-2025)"
             value={data}
             onChangeText={setData}
           />
@@ -153,8 +158,6 @@ export const Recebimentos = () => {
             options={categorias}
           />
         </ContainerAtributos>
-
-        
 
         <ContainerButton style={{ zIndex: -1 }}>
           <Button title="" onPress={handleSendData}>

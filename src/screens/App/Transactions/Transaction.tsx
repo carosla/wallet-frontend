@@ -41,7 +41,7 @@ export const Transaction = () => {
       try {
         const token = await AsyncStorage.getItem("token");
         const response = await axios.get(
-          `https://wallet-backend-2rmo.onrender.com/api/transacao`,
+          `${API_URL}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

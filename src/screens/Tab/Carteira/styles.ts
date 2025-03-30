@@ -152,8 +152,8 @@ export const ButtonTitleVertotos = styled.Text`
 `;
 
 export const IconTransaction = styled.Image`
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     margin-right: 10px;
 `;
 

@@ -24,6 +24,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
 
 export const Transacao = () => {
+  // Função para converter a data de dd-mm-yyyy para yyyy-mm-dd
+  const convertDateToTimestamp = (date: string) => {
+    const [day, month, year] = date.split("-"); // Separar os valores de dia, mês e ano
+    return `${year}-${month}-${day}`; // Retornar a data no formato yyyy-mm-dd
+  };
   const navigation = useNavigation();
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
@@ -73,11 +78,13 @@ export const Transacao = () => {
 
   // Função para enviar os dados
   const handleSendData = async () => {
+    // Converter a data para o formato yyyy-mm-dd
+    const formattedDate = convertDateToTimestamp(data);
     // Verificando os dados antes de enviar
     console.log("Enviando dados para o backend:", {
       categoria_id: selectedCategoria,
       valor,
-      data,
+      data: formattedDate,
       tipo_transacao: "saída", // Sempre "saída" neste caso
       descricao,
     });
@@ -88,7 +95,7 @@ export const Transacao = () => {
         {
           categoria_id: selectedCategoria,
           valor,
-          data,
+          data: formattedDate,
           tipo_transacao: "saída",
           descricao,
         },
@@ -140,7 +147,7 @@ export const Transacao = () => {
 
         <ContainerAtributos>
           <InputDescricao
-            placeholder="Data (ex: 2025-03-16)"
+            placeholder="Data (ex: 01-12-2025)"
             value={data}
             onChangeText={setData}
           />
