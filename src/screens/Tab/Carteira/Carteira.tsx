@@ -60,6 +60,7 @@ interface Transaction {
 export const Carteira = () => {
   const navigation = useNavigation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [totalBalance, setTotalBalance] = useState(0); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -69,7 +70,19 @@ export const Carteira = () => {
         const response = await axios.get(`${API_URL}/api/transacao`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setTransactions(response.data.slice(0, 5)); // Pega apenas as 5 primeiras transações
+        const transacoes = response.data;
+
+        // Calculando o saldo total (somando as entradas e subtraindo as saídas)
+        const saldo = transacoes.reduce((acc: number, transacao: Transaction) => {
+          if (transacao.tipo_transacao.transacao === "entrada") {
+            return acc + transacao.valor;
+          } else {
+            return acc - transacao.valor;
+          }
+        }, 0);
+
+        setTransactions(response.data.slice(0, 5)); 
+        setTotalBalance(saldo);
       } catch (error) {
         console.error("Erro ao buscar transações:", error);
       } finally {
@@ -93,7 +106,7 @@ export const Carteira = () => {
           <EllipseOne source={EllipseOnePng} />
           <ViewBalanceLeft>
             <TitleValor>Valor Total</TitleValor>
-            <TitleValorConta>R$ 1.000,00</TitleValorConta>
+            <TitleValorConta>R$ {totalBalance.toFixed(2).replace(".", ",")}</TitleValorConta>
           </ViewBalanceLeft>
 
           <ViewBalanceRight>
