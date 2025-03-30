@@ -6,14 +6,15 @@ export const Container = styled.View`
 `;
 
 export const ContentFlat = styled.View`
-    padding: 5px;
+    padding: 10px;
     margin-right: 10px;
     flex-direction: row;
 `;
 
 export const IconTransaction = styled.Image`
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
 `;
 
 export const DetailsTransaction = styled.View`

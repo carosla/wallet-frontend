@@ -47,7 +47,7 @@ const Login: React.FC = () => {
         try {
           // Enviar a requisição para o backend com as credenciais
           const response = await axios.post(
-            `${API_URL}/api/auth/login`, // URL do backend
+            `https://wallet-backend-2rmo.onrender.com/api/auth/login`, // URL do backend
             { email, password: senha }
           );
     
