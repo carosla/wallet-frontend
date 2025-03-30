@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Payments from "../../../assets/export.png";
 import TopUp from "../../../assets/add-circle.png";
@@ -8,7 +10,8 @@ import PayOut from "../../../assets/money-send.png";
 import EllipseOnePng from "../../../assets/ellipse1.png";
 import EllipseTwoPng from "../../../assets/ellipse2.png";
 import { Header } from "../../../components/Header/Header";
-import { limited_transaction } from "../../../utils/limited_transactions";
+import { API_URL } from "@env";
+
 import {
   Container,
   Content,
@@ -21,10 +24,8 @@ import {
   TitleNomeCartao,
   Body,
   IconPayment,
-  IconTransfer,
   IconPayOut,
   IconTopUp,
-  TitleTransfer,
   TitlePayments,
   TitlePayOut,
   TitleTopUp,
@@ -43,10 +44,43 @@ import {
   EllipseTwo,
 } from "./styles";
 
+interface Transaction {
+  transacao_id: string;
+  descricao: string;
+  valor: number;
+  data: string;
+  tipo_transacao: {
+    transacao: string;
+  };
+  categorium?: {
+    categoria: string;
+  };
+}
+
 export const Carteira = () => {
   const navigation = useNavigation();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const hadleGoTransaction = () => {
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        const response = await axios.get(`${API_URL}/api/transacao`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setTransactions(response.data.slice(0, 5)); // Pega apenas as 5 primeiras transações
+      } catch (error) {
+        console.error("Erro ao buscar transações:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+
+  const handleGoTransaction = () => {
     navigation.navigate("Transaction");
   };
 
@@ -75,14 +109,14 @@ export const Carteira = () => {
             style={{ alignItems: "center" }}
           >
             <IconPayment source={Payments} />
-            <TitlePayments>Recebtos</TitlePayments>
+            <TitlePayments>Recebimentos</TitlePayments>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate("Transacao")}
             style={{ alignItems: "center" }}
           >
             <IconPayOut source={PayOut} />
-            <TitlePayOut>Pagtos</TitlePayOut>
+            <TitlePayOut>Pagamentos</TitlePayOut>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate("Categorias")}
@@ -95,30 +129,50 @@ export const Carteira = () => {
       </ViewContainer>
 
       <Footer>
-        <FlatList
-          data={limited_transaction}
-          renderItem={({ item }) => (
-            <ContentFlat>
-              <IconTransaction source={item.icon} />
+        {loading ? (
+          <ActivityIndicator size="large" color="#000" />
+        ) : (
+          <FlatList
+            data={transactions}
+            keyExtractor={(item) => item.transacao_id}
+            renderItem={({ item }) => (
+              <ContentFlat>
+                <IconTransaction
+                  source={
+                    item.tipo_transacao.transacao === "entrada"
+                      ? require("../../../assets/income.png")
+                      : require("../../../assets/expense.png")
+                  }
+                />
 
-              <DetailsTransaction>
-                <NameTransaction>{item.title}</NameTransaction>
-                <SubtTitleTransaction>{item.subtitle}</SubtTitleTransaction>
-              </DetailsTransaction>
+                <DetailsTransaction>
+                  <NameTransaction>{item.descricao}</NameTransaction>
+                  <SubtTitleTransaction>
+                    {item.tipo_transacao.transacao} -{" "}
+                    {item.categorium?.categoria || "Sem categoria"}
+                  </SubtTitleTransaction>
+                </DetailsTransaction>
 
-              <AmountTransaction>R$ {item.price}</AmountTransaction>
-            </ContentFlat>
-          )}
-          ListHeaderComponent={
-            <ContentFlatHeader>
-              <Title>Minhas Transações</Title>
-              <ButtonVerTotos onPress={hadleGoTransaction}>
-                <ButtonTitleVertotos>Ver Todos</ButtonTitleVertotos>
-              </ButtonVerTotos>
-            </ContentFlatHeader>
-          }
-          showsVerticalScrollIndicator={false}
-        />
+                <AmountTransaction
+                  style={{
+                    color: item.tipo_transacao.transacao === "entrada" ? "blue" : "red",
+                  }}
+                >
+                  R$ {item.valor.toFixed(2)}
+                </AmountTransaction>
+              </ContentFlat>
+            )}
+            ListHeaderComponent={
+              <ContentFlatHeader>
+                <Title>Minhas Transações</Title>
+                <ButtonVerTotos onPress={handleGoTransaction}>
+                  <ButtonTitleVertotos>Ver Todos</ButtonTitleVertotos>
+                </ButtonVerTotos>
+              </ContentFlatHeader>
+            }
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </Footer>
     </Container>
   );
