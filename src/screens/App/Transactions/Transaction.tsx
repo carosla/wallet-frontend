@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, ActivityIndicator, Alert, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  ActivityIndicator,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { CaretDoubleLeft, Trash } from "phosphor-react-native"; // Adicionar ícone Trash
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -40,12 +45,9 @@ export const Transaction = () => {
     const fetchTransactions = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
-        const response = await axios.get(
-          `${API_URL}/api/transacao`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const response = await axios.get(`${API_URL}/api/transacao`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setTransactions(response.data);
       } catch (error) {
         console.error("Erro ao buscar transações:", error);
@@ -125,9 +127,10 @@ export const Transaction = () => {
               </AmountTransaction>
 
               {/* Ícone de excluir transação */}
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => handleDeleteTransaction(item.transacao_id)}
-                style={{marginLeft: 10}}>
+                style={{ marginLeft: 10 }}
+              >
                 <Trash size={24} color="red" />
               </TouchableOpacity>
             </ContentFlat>

@@ -39,7 +39,7 @@ export const Categorias = () => {
 
         // Enviar dados para o backend (API)
         const response = await axios.post(
-          `${API_URL}`,
+          `${API_URL}/api/categorias`, // Certifique-se de que a URL esteja correta
           { categoria },
           {
             headers: {
@@ -50,7 +50,7 @@ export const Categorias = () => {
         
         // Verifica a resposta da API
         if (response.status === 201) {
-          Alert.alert('Categoria cadastrada com sucesso')
+          Alert.alert('Categoria cadastrada com sucesso');
           navigation.navigate('TabRoutes'); // Navega para a tela de Carteira
         } else {
           console.error("Erro ao cadastrar categoria:", response.data);
@@ -65,6 +65,11 @@ export const Categorias = () => {
 
   const handleGoBackHome = () => {
     navigation.goBack();
+  };
+
+  const handleViewCategories = () => {
+    // Navega para a tela de visualização das categorias
+    navigation.navigate('ListaCategorias'); // Aqui, 'ViewCategories' deve ser o nome da tela de visualização das categorias
   };
 
   return (
@@ -110,6 +115,23 @@ export const Categorias = () => {
             <ButtonText>Cadastrar</ButtonText>
           </Button>
         </ContainerButton>
+
+        {/* Botão para visualizar as categorias */}
+        <Button
+          title="Visualizar Categorias"
+          onPress={handleViewCategories} // Chama a função para visualizar categorias
+          style={{
+            backgroundColor: COLORS.COLORS.PURPLEDARK2,
+            shadowColor: COLORS.COLORS.PURPLEDARK2,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+            elevation: 6,
+            marginTop: 20,
+          }}
+        >
+          <ButtonText>Visualizar Categorias</ButtonText>
+        </Button>
 
         <ButtonGoBack onPress={handleGoBackHome}>
           <CaretDoubleLeft size={25} weight="light" />

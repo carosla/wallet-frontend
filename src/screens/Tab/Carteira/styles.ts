@@ -180,3 +180,13 @@ export const AmountTransaction = styled.Text`
     color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY1};
     font-weight: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSREGULAR};
 `;
+
+export const ReloadButton = styled.TouchableOpacity`
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 50px;
+  shadow-color: #000;
+  shadow-opacity: 0.3;
+  shadow-radius: 4px;
+  elevation: 6;
+`;

@@ -104,7 +104,7 @@ export const Transacao = () => {
         }
       );
       if (response.status === 201) {
-        Alert.alert("Recebimento cadastrado com sucesso");
+        Alert.alert("Pagamento cadastrado com sucesso");
         navigation.navigate("TabRoutes");
       }
     } catch (error: any) {
@@ -115,7 +115,7 @@ export const Transacao = () => {
   return (
     <>
       <ContainerHeader>
-        <Header appName="Recebimentos" />
+        <Header appName="Pagamentos" />
       </ContainerHeader>
       <Container>
         <ContainerValor>

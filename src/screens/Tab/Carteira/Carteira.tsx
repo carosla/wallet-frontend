@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -11,6 +17,7 @@ import EllipseOnePng from "../../../assets/ellipse1.png";
 import EllipseTwoPng from "../../../assets/ellipse2.png";
 import { Header } from "../../../components/Header/Header";
 import { API_URL } from "@env";
+import { ArrowsClockwise } from "phosphor-react-native"; // Alterado para o ícone Refresh
 
 import {
   Container,
@@ -42,6 +49,7 @@ import {
   AmountTransaction,
   EllipseOne,
   EllipseTwo,
+  ReloadButton, // Estilo do botão de reload
 } from "./styles";
 
 interface Transaction {
@@ -60,42 +68,60 @@ interface Transaction {
 export const Carteira = () => {
   const navigation = useNavigation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [totalBalance, setTotalBalance] = useState(0); 
+  const [totalBalance, setTotalBalance] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-        const response = await axios.get(`${API_URL}/api/transacao`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const transacoes = response.data;
+  
+  // Função para buscar as transações da API
+  const fetchTransactions = async () => {
+    setLoading(true); // Ativar o carregamento antes de buscar os dados
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const response = await axios.get(`https://wallet-backend-2rmo.onrender.com/api/transacao`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const transacoes = response.data;
 
-        // Calculando o saldo total (somando as entradas e subtraindo as saídas)
-        const saldo = transacoes.reduce((acc: number, transacao: Transaction) => {
-          if (transacao.tipo_transacao.transacao === "entrada") {
-            return acc + transacao.valor;
-          } else {
-            return acc - transacao.valor;
-          }
-        }, 0);
+      // Ordenar do mais recente para o mais antigo
+    transacoes.sort((a: Transaction, b: Transaction) => {
+      return new Date(b.data).getTime() - new Date(a.data).getTime();
+    });
 
-        setTransactions(response.data.slice(0, 5)); 
-        setTotalBalance(saldo);
-      } catch (error) {
-        console.error("Erro ao buscar transações:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      // Calculando o saldo total (somando as entradas e subtraindo as saídas)
+      const saldo = transacoes.reduce((acc: number, transacao: Transaction) => {
+        if (transacao.tipo_transacao.transacao === "entrada") {
+          return acc + transacao.valor;
+        } else {
+          return acc - transacao.valor;
+        }
+      }, 0);
 
-    fetchTransactions();
-  }, []);
+      setTransactions(response.data.slice(0, 5));
+      setTotalBalance(saldo);
+    } catch (error) {
+      console.error("Erro ao buscar transações:", error);
+    } finally {
+      setLoading(false); // Desativar o carregamento após os dados serem carregados
+    }
+  };
 
+  // Função para navegar para a tela de transações completas
   const handleGoTransaction = () => {
     navigation.navigate("Transaction");
   };
+
+  // Função de reload para atualizar as transações
+  const handleReload = () => {
+    fetchTransactions(); // Recarrega os dados
+  };
+
+  useEffect(() => {
+    fetchTransactions(); // Chama ao carregar a tela pela primeira vez
+  }, []);
+
+   if (loading) {
+      return <ActivityIndicator size="large" color="#000" />;
+    }
 
   return (
     <Container>
@@ -106,7 +132,9 @@ export const Carteira = () => {
           <EllipseOne source={EllipseOnePng} />
           <ViewBalanceLeft>
             <TitleValor>Valor Total</TitleValor>
-            <TitleValorConta>R$ {totalBalance.toFixed(2).replace(".", ",")}</TitleValorConta>
+            <TitleValorConta>
+              R$ {totalBalance.toFixed(2).replace(".", ",")}
+            </TitleValorConta>
           </ViewBalanceLeft>
 
           <ViewBalanceRight>
@@ -168,7 +196,10 @@ export const Carteira = () => {
 
                 <AmountTransaction
                   style={{
-                    color: item.tipo_transacao.transacao === "entrada" ? "blue" : "red",
+                    color:
+                      item.tipo_transacao.transacao === "entrada"
+                        ? "blue"
+                        : "red",
                   }}
                 >
                   R$ {item.valor.toFixed(2)}
@@ -178,10 +209,21 @@ export const Carteira = () => {
             ListHeaderComponent={
               <ContentFlatHeader>
                 <Title>Minhas Transações</Title>
+                <ReloadButton onPress={handleReload}>
+                  <ArrowsClockwise size={20} color="black" />
+                </ReloadButton>
                 <ButtonVerTotos onPress={handleGoTransaction}>
                   <ButtonTitleVertotos>Ver Todos</ButtonTitleVertotos>
                 </ButtonVerTotos>
+                
               </ContentFlatHeader>
+            }
+            ListEmptyComponent={
+              <View style={{ alignItems: "center", marginTop: 20 }}>
+                <Text style={{ fontSize: 16, color: "#555" }}>
+                  Nenhuma transação encontrada.
+                </Text>
+              </View>
             }
             showsVerticalScrollIndicator={false}
           />

@@ -14,6 +14,7 @@ export declare global {
             Transaction: undefined,
             AppRoutes: undefined,
             TabRoutes: undefined,
+            ListaCategorias: undefines,
         }
     }
 }

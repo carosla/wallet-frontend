@@ -10,6 +10,7 @@ import { Transacao } from '../screens/App/Transacao';
 import { Recebimentos } from '../screens/App/Recebimentos';
 import { Categorias } from '../screens/App/Categorias';
 import { Carteira } from '../screens/Tab/Carteira';
+import { ListaCategorias } from '../screens/App/ListaCategorias';
 
 const {Navigator, Screen} = createNativeStackNavigator()
 
@@ -30,6 +31,7 @@ export const AppRoutes = () => {
       <Screen name='Recebimentos' component={Recebimentos} />
       <Screen name='Categorias' component={Categorias} />
       <Screen name='Carteira' component={Carteira} />
+      <Screen name='ListaCategorias' component={ListaCategorias}/>
     </Navigator>
   )
 }
