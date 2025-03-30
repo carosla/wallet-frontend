@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, ActivityIndicator } from "react-native";
-import { CaretDoubleLeft } from "phosphor-react-native";
+import { FlatList, ActivityIndicator, Alert, TouchableOpacity } from "react-native";
+import { CaretDoubleLeft, Trash } from "phosphor-react-native"; // Adicionar ícone Trash
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,7 +41,7 @@ export const Transaction = () => {
       try {
         const token = await AsyncStorage.getItem("token");
         const response = await axios.get(
-          `${API_URL}`,
+          `${API_URL}/api/transacao`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -59,6 +59,30 @@ export const Transaction = () => {
 
   const handleGoBackHome = () => {
     navigation.goBack();
+  };
+
+  const handleDeleteTransaction = async (transacao_id: string) => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const response = await axios.delete(
+        `${API_URL}/api/transacao/${transacao_id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (response.status === 200) {
+        // Remover a transação excluída da lista
+        setTransactions((prevTransactions) =>
+          prevTransactions.filter(
+            (transaction) => transaction.transacao_id !== transacao_id
+          )
+        );
+        Alert.alert("Transação excluída com sucesso");
+      }
+    } catch (error) {
+      console.error("Erro ao excluir transação:", error);
+      Alert.alert("Erro", "Não foi possível excluir a transação.");
+    }
   };
 
   if (loading) {
@@ -81,7 +105,6 @@ export const Transaction = () => {
                     : require("../../../assets/expense.png") // Ícone para saída
                 }
               />
-
               <DetailsTransaction>
                 <NameTransaction>{item.descricao}</NameTransaction>
                 <SubtTitleTransaction>
@@ -100,6 +123,13 @@ export const Transaction = () => {
               >
                 R$ {item.valor.toFixed(2)}
               </AmountTransaction>
+
+              {/* Ícone de excluir transação */}
+              <TouchableOpacity 
+                onPress={() => handleDeleteTransaction(item.transacao_id)}
+                style={{marginLeft: 10}}>
+                <Trash size={24} color="red" />
+              </TouchableOpacity>
             </ContentFlat>
           )}
           showsVerticalScrollIndicator={false}
