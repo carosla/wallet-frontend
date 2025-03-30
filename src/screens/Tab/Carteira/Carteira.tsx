@@ -77,7 +77,7 @@ export const Carteira = () => {
     setLoading(true); // Ativar o carregamento antes de buscar os dados
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await axios.get(`https://wallet-backend-2rmo.onrender.com/api/transacao`, {
+      const response = await axios.get(`${API_URL}/api/transacao`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const transacoes = response.data;
