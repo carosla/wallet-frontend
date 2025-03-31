@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -80,7 +81,7 @@ export const Carteira = () => {
       const response = await axios.get(`${API_URL}/api/transacao`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const transacoes = response.data;
+      const transacoes = Array.isArray(response.data) ? response.data : [];
 
       // Ordenar do mais recente para o mais antigo
     transacoes.sort((a: Transaction, b: Transaction) => {
@@ -96,14 +97,31 @@ export const Carteira = () => {
         }
       }, 0);
 
-      setTransactions(response.data.slice(0, 5));
+      setTransactions(transacoes.length > 0 ? transacoes.slice(0, 5) : []);
       setTotalBalance(saldo);
-    } catch (error) {
-      console.error("Erro ao buscar transações:", error);
+    } catch (error: unknown) {
+      // Verifica se o erro é do tipo AxiosError
+      if (axios.isAxiosError(error)) {
+        console.error("Erro ao buscar transações:", error.response?.data || error);
+  
+        Alert.alert(
+          "Erro ao carregar transações",
+          error.response?.data?.mensagem || "Erro desconhecido."
+        );
+      } else {
+        console.error("Erro inesperado:", error);
+        Alert.alert("Erro", "Ocorreu um erro inesperado.");
+      }
     } finally {
       setLoading(false); // Desativar o carregamento após os dados serem carregados
     }
   };
+
+  useEffect(() => {
+    fetchTransactions(); // Chama ao carregar a tela pela primeira vez
+  }, []);
+  
+  
 
   // Função para navegar para a tela de transações completas
   const handleGoTransaction = () => {
@@ -114,10 +132,6 @@ export const Carteira = () => {
   const handleReload = () => {
     fetchTransactions(); // Recarrega os dados
   };
-
-  useEffect(() => {
-    fetchTransactions(); // Chama ao carregar a tela pela primeira vez
-  }, []);
 
    if (loading) {
       return <ActivityIndicator size="large" color="#000" />;
