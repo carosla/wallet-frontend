@@ -53,6 +53,7 @@ export const Recebimentos = () => {
 
   // Carregar as categorias
   useEffect(() => {
+    if (!token) return;
     const fetchCategorias = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/categorias`);
@@ -72,7 +73,7 @@ export const Recebimentos = () => {
     };
 
     fetchCategorias();
-  }, []);
+  }, [token]);
 
   // Função para enviar os dados
   const handleSendData = async () => {
