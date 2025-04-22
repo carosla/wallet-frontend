@@ -5,7 +5,7 @@ import { useTheme } from 'styled-components/native';
 
 import { variants } from './Variante';
 import { Container, Title, Content } from './style';
-import { TouchableOpacityProps } from 'react-native-gesture-handler';
+import { TouchableOpacityProps } from 'react-native';
 import theme from '@src/styles/theme';
 
 interface IButtonProps {

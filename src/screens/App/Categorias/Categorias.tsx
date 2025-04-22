@@ -100,9 +100,7 @@ export const Categorias = () => {
           />
         </ContainerAtributos>
 
-        <ContainerButton style={{ zIndex: -1 }}>
           <Button
-            title=""
             onPress={handleSendData}  // Chama a função para enviar os dados
             style={{
               shadowColor: COLORS.COLORS.PURPLEDARK2,
@@ -114,7 +112,6 @@ export const Categorias = () => {
           >
             <ButtonText>Cadastrar</ButtonText>
           </Button>
-        </ContainerButton>
 
         {/* Botão para visualizar as categorias */}
         <Button

@@ -45,6 +45,7 @@ export const ContainerAtributos = styled.View`
   align-items: center;
   background-color: transparent;
   font-family: ${({ theme }: { theme: DefaultTheme }) => theme.FONTS.POPPINSBOLD};
+  margin-bottom: 20px;
 `;
 
 export const ContainerButton = styled.TouchableOpacity`

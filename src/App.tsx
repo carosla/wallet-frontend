@@ -18,6 +18,7 @@ import { DMSans_400Regular } from "@expo-google-fonts/dm-sans"
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display"
 import theme from "../src/styles/theme";
 import {Routes} from './routes'
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -35,6 +36,7 @@ export default function App() {
     }
 
     return (
+        <GestureHandlerRootView style={{flex: 1}}>
         <ThemeProvider theme={theme}>
             <NavigationContainer>
             <StatusBar
@@ -52,6 +54,7 @@ export default function App() {
         </View>
         </NavigationContainer>
         </ThemeProvider>
+        </GestureHandlerRootView>
     );
 }
 
