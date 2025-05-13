@@ -53,12 +53,16 @@ export const Recebimentos = () => {
 
   // Carregar as categorias
   useEffect(() => {
-    if (!token) return;
     const fetchCategorias = async () => {
+      if (!token) return;
       try {
-        const response = await axios.get(`${API_URL}/api/categorias`);
+        const response = await axios.get(
+          `${API_URL}/api/categorias`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         console.log("Categorias retornadas:", response.data); // Verifique o formato da resposta aqui
-
+        
         // Garantir que a resposta esteja no formato esperado
         const categoriasFormatadas = response.data.map((cat: any) => ({
           label: cat.categoria, // Verifique o nome do campo
