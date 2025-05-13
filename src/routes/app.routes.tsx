@@ -11,6 +11,7 @@ import { Recebimentos } from '../screens/App/Recebimentos';
 import { Categorias } from '../screens/App/Categorias';
 import { Carteira } from '../screens/Tab/Carteira';
 import { ListaCategorias } from '../screens/App/ListaCategorias';
+import { ConnectedAccount } from '@src/screens/App/ConnectedAccount';
 
 const {Navigator, Screen} = createNativeStackNavigator()
 
@@ -32,6 +33,7 @@ export const AppRoutes = () => {
       <Screen name='Categorias' component={Categorias} />
       <Screen name='Carteira' component={Carteira} />
       <Screen name='ListaCategorias' component={ListaCategorias}/>
+      <Screen name='ConnectedAccount' component={ConnectedAccount}/>
     </Navigator>
   )
 }

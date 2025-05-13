@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { Pen, Trash } from 'phosphor-react-native';
-
+import { useNavigation } from "@react-navigation/native";
 import { Profile as ComponentProfile } from '../../../components/Profile';
 import { GoBack } from '../../../components/GoBack';
 import {
@@ -20,6 +20,7 @@ import {
 } from './styles';
 
 export const Profile = () => {
+    const navigation = useNavigation();
     const { COLORS } = useTheme();
 
     return (
@@ -46,7 +47,7 @@ export const Profile = () => {
                 <Content>
                     <ComponentProfile
                         name='Conta Conectada'
-                        onPress={() => { }}
+                        onPress={() => navigation.navigate('ConnectedAccount')}
                     />
                     <ComponentProfile
                         name='Privacidade e Segurança'
