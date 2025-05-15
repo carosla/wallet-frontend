@@ -19,6 +19,7 @@ import {
     ViewIconButton,
 } from './styles';
 
+
 export const Profile = () => {
     const navigation = useNavigation();
     const { COLORS } = useTheme();

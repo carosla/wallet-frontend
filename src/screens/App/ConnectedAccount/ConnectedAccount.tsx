@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Alert, TextInput } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { Pen } from 'phosphor-react-native';
+import axios from 'axios';
 
 import { GoBack } from '../../../components/GoBack';
 import {
@@ -16,28 +17,82 @@ import {
     Row,
     EditableInput
 } from './styles';
+import { API_URL } from "@env";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const ConnectedAccount = () => {
     const { COLORS } = useTheme();
 
-    // Suponha que os dados virão da API/backend
-    const [nomePerfil, setNomePerfil] = useState<string | null>('Ana Profile');
-    const [descricao, setDescricao] = useState<string>('Usuária ativa');
-    const [email, setEmail] = useState<string>('ana@email.com');
-    const [login, setLogin] = useState<string>('ana123');
+    const [perfilId, setPerfilId] = useState<number | null>(null);
+    const [nomePerfil, setNomePerfil] = useState<string | null>(null);
+    const [descricao, setDescricao] = useState<string>('');
+    const [fotoPerfil, setFotoPerfil] = useState<string>('');
+    const [email, setEmail] = useState<string>(''); // Assumindo que virá de outro endpoint ou auth
+    const [login, setLogin] = useState<string>(''); // Assumindo que virá de outro endpoint ou auth
 
     const [editando, setEditando] = useState(false);
-
     const nomeExibido = nomePerfil ?? login;
+
+ const [token, setToken] = useState<string | null>(null);
+
+  // Função para buscar o token armazenado
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem("token");
+      setToken(storedToken || "");
+    };
+    fetchToken();
+  }, []);
+
+    useEffect(() => {
+        const buscarPerfil = async () => {
+            try {
+                const response = await axios.get(API_URL, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const { nome, descricao, foto_perfil, perfil_id } = response.data;
+
+                setNomePerfil(nome);
+                setDescricao(descricao);
+                setFotoPerfil(foto_perfil);
+                setPerfilId(perfil_id);
+                // Se tiver usuário associado, você pode setar email e login aqui também
+            } catch (error) {
+                console.error('Erro ao buscar perfil:', error);
+                Alert.alert('Erro', 'Não foi possível carregar os dados do perfil');
+            }
+        };
+
+        buscarPerfil();
+    }, []);
 
     const toggleEdicao = () => {
         setEditando(!editando);
     };
 
-    const salvarEdicao = () => {
-        // Aqui você colocaria lógica de salvar no backend
-        setEditando(false);
-        Alert.alert('Dados atualizados');
+    const salvarEdicao = async () => {
+        if (!perfilId) return;
+
+        try {
+            await axios.put(`${API_URL}/api/perfil`, {
+                nome: nomePerfil,
+                descricao,
+                foto_perfil: fotoPerfil,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setEditando(false);
+            Alert.alert('Sucesso', 'Dados atualizados com sucesso');
+        } catch (error) {
+            console.error('Erro ao atualizar perfil:', error);
+            Alert.alert('Erro', 'Não foi possível salvar as alterações');
+        }
     };
 
     return (
@@ -45,7 +100,7 @@ export const ConnectedAccount = () => {
             <GoBack />
             <Container>
                 <Header>
-                    <Avatar source={{ uri: 'https://avatars.githubusercontent.com/u/89313900?v=4' }} />
+                    <Avatar source={{ uri: fotoPerfil || 'https://placehold.co/100x100' }} />
                 </Header>
 
                 <Row>
