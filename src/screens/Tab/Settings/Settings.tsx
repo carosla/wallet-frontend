@@ -1,8 +1,8 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { SignOut } from 'phosphor-react-native';
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 
 import { Header } from '../../../components/Header/Header';
 import { Profile } from '../../../components/Profile';
@@ -12,6 +12,7 @@ import {
     TitleFooter,
     ViewIconButton
 } from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Settings = () => {
     const { COLORS } = useTheme();
@@ -20,6 +21,27 @@ export const Settings = () => {
     const handleGoPerfilUser = () => {
         navigation.navigate('Profile');
     }
+
+    const handleLogout = async () => {
+  try {
+    await AsyncStorage.removeItem("token"); // Remove o token
+
+    // Navegar para a tela de login e limpar histórico de navegação
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Login' }], // substitua por sua rota de login
+      })
+    );
+
+    // (Opcional) Encerrar o app em Android
+    // BackHandler.exitApp();
+  } catch (error) {
+    Alert.alert("Erro", "Não foi possível sair do app.");
+    console.error("Erro ao sair:", error);
+  }
+};
+
 
     return (
         <>
@@ -35,34 +57,14 @@ export const Settings = () => {
 
                 <Profile
                     iconLeft
-                    typeNotification
-                    name='Notificações'
-                    onPress={() => { }}
-                />
-
-                <Profile
-                    iconLeft
-                    typeWalet
-                    name='Minha Carteira'
-                    onPress={() => { }}
-                />
-
-                <Profile
-                    iconLeft
                     typeLogin
                     name='Configuração Login'
                     onPress={() => { }}
                 />
 
-                <Profile
-                    iconLeft
-                    typeCall
-                    name='Central Serviços'
-                    onPress={() => { }}
-                />
 
                 <ViewFooter>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleLogout}>
                         <ViewIconButton>
                             <SignOut
                                 size={36}

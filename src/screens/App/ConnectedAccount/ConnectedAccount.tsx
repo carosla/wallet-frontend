@@ -1,41 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { Alert, TextInput } from 'react-native';
-import { useTheme } from 'styled-components/native';
-import { Pen } from 'phosphor-react-native';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Alert, TextInput } from "react-native";
+import { useTheme } from "styled-components/native";
+import { Pen } from "phosphor-react-native";
+import axios from "axios";
 
-import { GoBack } from '../../../components/GoBack';
+import { GoBack } from "../../../components/GoBack";
 import {
-    Container,
-    Header,
-    Avatar,
-    UserName,
-    InfoContainer,
-    Label,
-    InfoText,
-    EditButton,
-    Row,
-    EditableInput
-} from './styles';
+  Container,
+  Header,
+  Avatar,
+  UserName,
+  InfoContainer,
+  Label,
+  InfoText,
+  EditButton,
+  Row,
+  EditableInput,
+} from "./styles";
 import { API_URL } from "@env";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const ConnectedAccount = () => {
-    const { COLORS } = useTheme();
+  const { COLORS } = useTheme();
 
-    const [perfilId, setPerfilId] = useState<number | null>(null);
-    const [nomePerfil, setNomePerfil] = useState<string | null>(null);
-    const [descricao, setDescricao] = useState<string>('');
-    const [fotoPerfil, setFotoPerfil] = useState<string>('');
-    const [email, setEmail] = useState<string>(''); // Assumindo que virá de outro endpoint ou auth
-    const [login, setLogin] = useState<string>(''); // Assumindo que virá de outro endpoint ou auth
+  const [perfilId, setPerfilId] = useState<number | null>(null);
+  const [nomePerfil, setNomePerfil] = useState<string | null>(null);
+  const [descricao, setDescricao] = useState<string>("");
+  const [fotoPerfil, setFotoPerfil] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [login, setLogin] = useState<string>("");
 
-    const [editando, setEditando] = useState(false);
-    const nomeExibido = nomePerfil ?? login;
+  const [editando, setEditando] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const nomeExibido = nomePerfil ?? login;
 
- const [token, setToken] = useState<string | null>(null);
-
-  // Função para buscar o token armazenado
+  // Buscar token
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem("token");
@@ -44,97 +43,108 @@ export const ConnectedAccount = () => {
     fetchToken();
   }, []);
 
-    useEffect(() => {
-        const buscarPerfil = async () => {
-            try {
-                const response = await axios.get(API_URL, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+  // Buscar dados do perfil
+  useEffect(() => {
+    const buscarPerfil = async () => {
+      if (!token) return;
 
-                const { nome, descricao, foto_perfil, perfil_id } = response.data;
+      try {
+        const response = await axios.get(`${API_URL}/api/perfil`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-                setNomePerfil(nome);
-                setDescricao(descricao);
-                setFotoPerfil(foto_perfil);
-                setPerfilId(perfil_id);
-                // Se tiver usuário associado, você pode setar email e login aqui também
-            } catch (error) {
-                console.error('Erro ao buscar perfil:', error);
-                Alert.alert('Erro', 'Não foi possível carregar os dados do perfil');
-            }
-        };
+        const { nome, descricao, foto_perfil, perfil_id, email, login } =
+          response.data;
 
-        buscarPerfil();
-    }, []);
-
-    const toggleEdicao = () => {
-        setEditando(!editando);
+        setNomePerfil(nome);
+        setDescricao(descricao);
+        setFotoPerfil(foto_perfil);
+        setPerfilId(perfil_id);
+        setEmail(email || "");
+        setLogin(login || "");
+      } catch (error) {
+        console.error("Erro ao buscar perfil:", error);
+        Alert.alert("Erro", "Não foi possível carregar os dados do perfil");
+      }
     };
 
-    const salvarEdicao = async () => {
-        if (!perfilId) return;
+    buscarPerfil();
+  }, [token]);
 
-        try {
-            await axios.put(`${API_URL}/api/perfil`, {
-                nome: nomePerfil,
-                descricao,
-                foto_perfil: fotoPerfil,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+  const toggleEdicao = () => {
+    setEditando(!editando);
+  };
 
-            setEditando(false);
-            Alert.alert('Sucesso', 'Dados atualizados com sucesso');
-        } catch (error) {
-            console.error('Erro ao atualizar perfil:', error);
-            Alert.alert('Erro', 'Não foi possível salvar as alterações');
+  const salvarEdicao = async () => {
+    if (!perfilId) return;
+
+    try {
+      await axios.put(
+        `${API_URL}/api/perfil`,
+        {
+          nome: nomePerfil,
+          descricao,
+          foto_perfil: fotoPerfil,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-    };
+      );
 
-    return (
-        <>
-            <GoBack />
-            <Container>
-                <Header>
-                    <Avatar source={{ uri: fotoPerfil || 'https://placehold.co/100x100' }} />
-                </Header>
+      setEditando(false);
+      Alert.alert("Sucesso", "Dados atualizados com sucesso");
+    } catch (error) {
+      console.error("Erro ao atualizar perfil:", error);
+      Alert.alert("Erro", "Não foi possível salvar as alterações");
+    }
+  };
 
-                <Row>
-                    <UserName>{nomeExibido}</UserName>
-                    <EditButton onPress={toggleEdicao}>
-                        <Pen size={24} color={COLORS.PURPLEDARK1} />
-                    </EditButton>
-                </Row>
+  return (
+    <>
+      <GoBack />
+      <Container>
+        <Header>
+          <Avatar
+            source={{ uri: fotoPerfil || "https://placehold.co/100x100" }}
+          />
+        </Header>
 
-                <InfoContainer>
-                    <Label>Email:</Label>
-                    <InfoText>{email}</InfoText>
+        <Row>
+          <UserName>{nomeExibido}</UserName>
+          <EditButton onPress={toggleEdicao}>
+            <Pen size={24} color={COLORS.PURPLEDARK1} />
+          </EditButton>
+        </Row>
 
-                    <Label>Login:</Label>
-                    <InfoText>{login}</InfoText>
+        <InfoContainer>
+          <Label>Email:</Label>
+          <InfoText>{email}</InfoText>
 
-                    <Label>Descrição:</Label>
-                    {editando ? (
-                        <EditableInput
-                            value={descricao}
-                            onChangeText={setDescricao}
-                            multiline
-                        />
-                    ) : (
-                        <InfoText>{descricao}</InfoText>
-                    )}
-                </InfoContainer>
+          <Label>Login:</Label>
+          <InfoText>{login}</InfoText>
 
-                {editando && (
-                    <EditButton onPress={salvarEdicao}>
-                        <InfoText style={{ color: COLORS.PURPLEDARK1 }}>Salvar</InfoText>
-                    </EditButton>
-                )}
-            </Container>
-        </>
-    );
+          <Label>Descrição:</Label>
+          {editando ? (
+            <EditableInput
+              value={descricao}
+              onChangeText={setDescricao}
+              multiline
+            />
+          ) : (
+            <InfoText>{descricao}</InfoText>
+          )}
+        </InfoContainer>
+
+        {editando && (
+          <EditButton onPress={salvarEdicao}>
+            <InfoText style={{ color: COLORS.PURPLEDARK1 }}>Salvar</InfoText>
+          </EditButton>
+        )}
+      </Container>
+    </>
+  );
 };

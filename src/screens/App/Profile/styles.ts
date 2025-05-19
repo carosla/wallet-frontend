@@ -5,60 +5,55 @@ export const Container = styled.View`
 `;
 
 export const Header = styled.View`
-    width: 100%;
     align-items: center;
-    justify-content: center;
-`;
-
-export const Content = styled.View`
-    margin-top: 30px;
-`;
-
-export const Footer = styled.View`
-    margin-top: 10px;
+    margin-bottom: 20px;
 `;
 
 export const Avatar = styled.Image`
-    width: 95px;
-    height: 95px;
-    border-radius: 45px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
 `;
 
-export const ViewHeader = styled.View`
+export const UserName = styled.Text`
+    font-size: 22px;
+    font-family: ${({ theme }: { theme: DefaultTheme }) => theme.FONTS.POPPINSLIGHT};
+    color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.PURPLEDARK1};
+`;
+
+export const Row = styled.View`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
+    gap: 10px;
 `;
 
-export const HeaderName = styled.Text`
-    font-size: 22px;
-    margin-right: 15px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
-    font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSLIGHT};
+export const InfoContainer = styled.View`
+    margin-top: 20px;
 `;
 
-export const IconButton = styled.TouchableOpacity`
-
+export const Label = styled.Text`
+    font-size: 16px;
+    font-weight: bold;
+    color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.GRAY1};
 `;
 
-export const ViewFooter = styled.View`
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    margin-top: 50px;
+export const InfoText = styled.Text`
+    font-size: 16px;
+    color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.GRAY2};
+    margin-bottom: 10px;
 `;
 
-export const TitleFooter = styled.Text`
-    font-size: 17px;
-    margin-top: 10px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
-    font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSREGULAR};
+export const EditButton = styled.TouchableOpacity`
+    margin-top: 15px;
+    align-self: center;
 `;
 
-export const ViewIconButton = styled.View`
+export const EditableInput = styled.TextInput`
+    border: 1px solid ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.GRAY4};
+    border-radius: 8px;
     padding: 10px;
-    border-radius: 30px;
-    border-width: 1px;
-    border-color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY5};
+    font-size: 16px;
+    color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.GRAY2};
+    margin-bottom: 10px;
 `;
