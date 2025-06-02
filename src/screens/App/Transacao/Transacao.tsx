@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   Container,
   ButtonText,
@@ -9,10 +9,10 @@ import {
   ContainerButton,
   ContainerValor,
   ContainerHeader,
+  ButtonGoBack,
 } from "./styles";
-import { Text, Alert } from "react-native";
+import { Text, Alert, TouchableOpacity } from "react-native";
 import { CaretDoubleLeft } from "phosphor-react-native";
-import { ButtonGoBack } from "./styles";
 import InputDescricao from "../../../components/Input_Descricao";
 import InputValor from "../../../components/Input_Valor";
 import COLORS from "../../../styles/theme";
@@ -24,11 +24,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
 
 export const Transacao = () => {
-  // Função para converter a data de dd-mm-yyyy para yyyy-mm-dd
-  const convertDateToTimestamp = (date: string) => {
-    const [day, month, year] = date.split("-"); // Separar os valores de dia, mês e ano
-    return `${year}-${month}-${day}`; // Retornar a data no formato yyyy-mm-dd
-  };
   const navigation = useNavigation();
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
@@ -40,9 +35,31 @@ export const Transacao = () => {
     null
   );
   const [token, setToken] = useState<string | null>(null);
-  
 
-  // Função para buscar o token armazenado
+  // Date Picker
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const convertDateToTimestamp = (date: string) => {
+    const [day, month, year] = date.split("-");
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleDateChange = (event: any, selected?: Date) => {
+    setShowDatePicker(false);
+    if (selected) {
+      setSelectedDate(selected);
+      setData(formatDate(selected));
+    }
+  };
+
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem("token");
@@ -51,22 +68,17 @@ export const Transacao = () => {
     fetchToken();
   }, []);
 
-  // Carregar as categorias
   useEffect(() => {
     const fetchCategorias = async () => {
       if (!token) return;
       try {
-        const response = await axios.get(
-          `${API_URL}/api/categorias`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        console.log("Categorias retornadas:", response.data); // Verifique o formato da resposta aqui
-        
-        // Garantir que a resposta esteja no formato esperado
+        const response = await axios.get(`${API_URL}/api/categorias`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
         const categoriasFormatadas = response.data.map((cat: any) => ({
-          label: cat.categoria, // Verifique o nome do campo
-          value: cat.categoria_id.toString(), // Verifique o nome do campo
+          label: cat.categoria,
+          value: cat.categoria_id.toString(),
         }));
 
         setCategorias(categoriasFormatadas);
@@ -79,19 +91,9 @@ export const Transacao = () => {
     fetchCategorias();
   }, [token]);
 
-  // Função para enviar os dados
   const handleSendData = async () => {
-    // Converter a data para o formato yyyy-mm-dd
     const formattedDate = convertDateToTimestamp(data);
-    // Verificando os dados antes de enviar
-    console.log("Enviando dados para o backend:", {
-      categoria_id: selectedCategoria,
-      valor,
-      data: formattedDate,
-      tipo_transacao: "saída", // Sempre "saída" neste caso
-      descricao,
-    });
-  
+
     try {
       const response = await axios.post(
         `${API_URL}/api/transacao`,
@@ -111,10 +113,11 @@ export const Transacao = () => {
         navigation.navigate("TabRoutes");
       }
     } catch (error: any) {
-      console.error("Erro na requisição:", error.response.data); // Exibe o erro do backend
+      console.error("Erro na requisição:", error.response?.data || error);
+      Alert.alert("Erro", "Não foi possível cadastrar o pagamento.");
     }
   };
-  
+
   return (
     <>
       <ContainerHeader>
@@ -149,11 +152,22 @@ export const Transacao = () => {
         </ContainerAtributos>
 
         <ContainerAtributos>
-          <InputDescricao
-            placeholder="Data (ex: 01-12-2025)"
-            value={data}
-            onChangeText={setData}
-          />
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+            <InputDescricao
+              placeholder="Selecione a data"
+              value={data}
+              editable={false}
+              pointerEvents="none"
+            />
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              value={selectedDate}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
         </ContainerAtributos>
 
         <ContainerAtributos>
@@ -164,9 +178,7 @@ export const Transacao = () => {
           />
         </ContainerAtributos>
 
-        
-
-        <ContainerButton style={{ zIndex: -1 }}>
+        <ContainerButton>
           <Button title="" onPress={handleSendData}>
             <ButtonText>Enviar</ButtonText>
           </Button>
