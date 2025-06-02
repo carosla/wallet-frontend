@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   Container,
   ButtonText,
@@ -37,8 +36,8 @@ export const Recebimentos = () => {
   const [token, setToken] = useState<string | null>(null);
 
   // Date Picker
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+ /* const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());*/
 
   // Função para formatar data para exibição (dd-mm-yyyy)
   const formatDate = (date: Date) => {
@@ -54,13 +53,13 @@ export const Recebimentos = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const handleDateChange = (event: any, selected?: Date) => {
+ /* const handleDateChange = (event: any, selected?: Date) => {
     setShowDatePicker(false);
     if (selected) {
       setSelectedDate(selected);
       setData(formatDate(selected));
     }
-  };
+  };*/
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -154,7 +153,7 @@ export const Recebimentos = () => {
         </ContainerAtributos>
 
         <ContainerAtributos>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <TouchableOpacity>
             <InputDescricao
               placeholder="Selecione a data"
               value={data}
@@ -162,14 +161,7 @@ export const Recebimentos = () => {
               pointerEvents="none"
             />
           </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
-            />
-          )}
+          
         </ContainerAtributos>
 
         <ContainerAtributos>
