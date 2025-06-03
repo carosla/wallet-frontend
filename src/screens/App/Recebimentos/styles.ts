@@ -9,6 +9,7 @@ export const Container = styled.View`
   background-color: #f5f5f5;
   margin-width: 30px;
   margin-color: black;
+  
 `;
 
 export const ContainerHeader = styled.View`

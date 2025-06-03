@@ -11,6 +11,7 @@ import {
   ContainerHeader,
   ButtonGoBack,
 } from "./styles";
+import { Calendar } from "phosphor-react-native"; 
 import { Text, Alert, TouchableOpacity } from "react-native";
 import { CaretDoubleLeft } from "phosphor-react-native";
 import InputDescricao from "../../../components/Input_Descricao";
@@ -154,7 +155,7 @@ export const Recebimentos = () => {
         </ContainerAtributos>
 
         <ContainerAtributos>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)}>    
             <InputDescricao
               placeholder="Selecione a data"
               value={data}
@@ -162,14 +163,16 @@ export const Recebimentos = () => {
               pointerEvents="none"
             />
           </TouchableOpacity>
-          {showDatePicker && (
+            {showDatePicker && (
             <DateTimePicker
               value={selectedDate}
               mode="date"
               display="default"
               onChange={handleDateChange}
             />
+          
           )}
+          
         </ContainerAtributos>
 
         <ContainerAtributos>

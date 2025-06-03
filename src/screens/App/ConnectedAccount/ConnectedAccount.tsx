@@ -107,6 +107,7 @@ export const ConnectedAccount = () => {
     <>
       <GoBack />
       <Container>
+        
         <Header>
           <Avatar
             source={{ uri: fotoPerfil || "https://placehold.co/100x100" }}

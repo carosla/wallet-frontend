@@ -2,12 +2,14 @@ import styled, { DefaultTheme } from "styled-components/native";
 
 export const Container = styled.View`
     flex: 1;
+    margin-top: 40px
 `;
 
 export const ViewContainer = styled.View`
     padding: 0 30px;
     align-items: center;
     justify-content: center;
+    
 `;
 
 export const Content = styled.View`
@@ -183,10 +185,11 @@ export const AmountTransaction = styled.Text`
 
 export const ReloadButton = styled.TouchableOpacity`
   background-color: #f0f0f0;
-  padding: 10px;
+  padding: 5px;
   border-radius: 50px;
   shadow-color: #000;
-  shadow-opacity: 0.3;
-  shadow-radius: 4px;
+  shadow-opacity: 0.2;
+  shadow-radius: 2px;
   elevation: 6;
+  shadow-offset: 0px 3px;
 `;

@@ -8,5 +8,5 @@ export const Container = styled.TouchableOpacity`
     margin-left: 35px;
     align-items: center;
     justify-content: center;
-    margin-top: ${Platform.OS === 'ios' ? 0 : 50}px;
+    margin-top: ${Platform.OS === 'ios' ? 40 : 50}px;
 `;

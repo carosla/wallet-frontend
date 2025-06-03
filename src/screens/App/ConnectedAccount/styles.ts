@@ -2,6 +2,7 @@ import styled, { DefaultTheme } from 'styled-components/native';
 
 export const Container = styled.View`
     padding: 20px;
+    
 `;
 
 export const Header = styled.View`

@@ -66,6 +66,15 @@ interface Transaction {
   };
 }
 
+const formatDate = (isoString: string) => {
+  const date = new Date(isoString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+
 export const Carteira = () => {
   const navigation = useNavigation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -203,7 +212,7 @@ export const Carteira = () => {
                 <DetailsTransaction>
                   <NameTransaction>{item.descricao}</NameTransaction>
                   <SubtTitleTransaction>
-                    {item.tipo_transacao.transacao} -{" "}
+                    {formatDate(item.data)} -{" "}
                     {item.categorium?.categoria || "Sem categoria"}
                   </SubtTitleTransaction>
                 </DetailsTransaction>

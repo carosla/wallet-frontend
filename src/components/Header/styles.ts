@@ -7,7 +7,7 @@ export const Container = styled.View`
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
-    margin-top: ${Platform.OS === "ios" ? 0 : 25}px;
+    margin-top: ${Platform.OS === "ios" ? 30 : 40}px;
 `;
 
 export const ContentHeader = styled.View`
