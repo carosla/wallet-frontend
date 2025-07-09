@@ -61,7 +61,7 @@ export const Cadastro = () => {
                         secureTextEntry={false}
                         iconColor={COLORS.GRAY2}
                         iconName="person-outline"
-                        placeholder="Digite seu nome"
+                        placeholder="Digite seu login"
                         value={login}
                         onChangeText={setLogin}
                     />

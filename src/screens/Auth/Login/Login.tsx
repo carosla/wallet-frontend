@@ -67,12 +67,12 @@ const Login: React.FC = () => {
           <ContentHeader>
             <Title>Seja bem vindo(a) {"\n"} a App Carteira</Title>
 
-            <Description>Entrar com redes sociais</Description>
+            {/*<Description>Entrar com redes sociais</Description>
 
             <ViewButton>
               <ButtonSocialGoogle title="Google" />
               <ButtonSocial IconName="facebook" title="Facebook" />
-            </ViewButton>
+            </ViewButton>*/}
             
           </ContentHeader>
 
