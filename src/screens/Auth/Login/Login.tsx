@@ -66,14 +66,6 @@ const Login: React.FC = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <ContentHeader>
             <Title>Seja bem vindo(a) {"\n"} a App Carteira</Title>
-
-            <Description>Entrar com redes sociais</Description>
-
-            <ViewButton>
-              <ButtonSocialGoogle title="Google" />
-              <ButtonSocial IconName="facebook" title="Facebook" />
-            </ViewButton>
-            
           </ContentHeader>
 
           <ContentBody>

@@ -18,7 +18,7 @@ export const ContentHeader = styled.View`
 
 export const ContentBody = styled.View`
     margin-bottom: 20px;
-    margin-top: 70px;
+
 `;
 
 export const ViewButton = styled.View`
