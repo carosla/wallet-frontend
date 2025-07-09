@@ -9,6 +9,8 @@ export const Container = styled.View`
 export const ContentHeader = styled.View`
     width: 100%;
     margin-left: -10px;
+    margin-top: 40px;
+    margin-bottom: 120px;
     align-items: center;
     justify-content: space-between;
     margin-top: 100px;
