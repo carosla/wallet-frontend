@@ -1,21 +1,37 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
-import { CartesianChart, Line, useChartPressState, Pie, PolarChart } from "victory-native";
-import Animated, { SharedValue, useAnimatedProps } from 'react-native-reanimated';
-import { Circle } from '@shopify/react-native-skia';
-import { format } from 'date-fns';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { Pie, PolarChart } from "victory-native";
+import { useNavigation } from "@react-navigation/native";
 
-const DATA = [
-  { day: new Date("2024-04-09").getTime(), price: 600 },
-  { day: new Date("2024-04-10").getTime(), price: 500 },
-  { day: new Date("2024-04-11").getTime(), price: 630 },
-  { day: new Date("2024-04-12").getTime(), price: 420 },
-  { day: new Date("2024-04-13").getTime(), price: 900 },
-  { day: new Date("2024-04-14").getTime(), price: 940 },
-  { day: new Date("2024-04-15").getTime(), price: 820.90 },
-  { day: new Date("2024-04-18").getTime(), price: 1520 },
-];
+import {
+  Container,
+  Header,
+  SubHeader,
+  ChartWrapper,
+  ResumoContainer,
+  ResumoTitleRow,
+  ResumoLabel,
+  ResumoRow,
+  Receita,
+  Despesa,
+  Saldo,
+  SaldoTotal,
+  ResumoItem,
+  ResumoIconCircle,
+  ResumoIconText,
+  ResumoValue,
+  ChartSection,
+  LegendWrapper,
+  LegendItem,
+  LegendColor,
+  LegendText,
+} from "./styles";
+import { View } from "react-native";
+
+const resumo = {
+  receita: 5000,
+  despesa: 2100,
+  saldo: 2900,
+};
 
 const chartData = [
   { label: "Alimentação", value: 800, color: "#4f46e5" },
@@ -25,96 +41,43 @@ const chartData = [
   { label: "Outros", value: 150, color: "#6366f1" },
 ];
 
-Animated.addWhitelistedNativeProps({ text: true });
-const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
-
-function ToolTip({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }) {
-  return <Circle cx={x} cy={y} r={8} color="black" />;
-}
-
 export const Relatorio = () => {
   const navigation = useNavigation();
 
-  const handleGoTransaction = () => {
-    navigation.navigate('Transaction');
-  };
-
-  const { state, isActive } = useChartPressState({ x: 0, y: { price: 0 } });
-
-  const animatedText = useAnimatedProps(() => {
-    return {
-      text: `R$ ${state.y.price.value.value.toFixed(2)}`,
-      defaultValue: ""
-    };
-  });
-
-  const animatedDateText = useAnimatedProps(() => {
-    const date = new Date(state.x.value.value);
-    return {
-      text: `${date.toLocaleDateString("pt-BR")}`,
-      defaultValue: ""
-    };
-  });
-
   return (
-    <View style={styles.container}>
-      {/* Título da Tela */}
-      <Text style={styles.title}>Relatório Financeiro</Text>
+    <Container>
+      <Header>Relatório Financeiro</Header>
 
-      {/* Gráfico de Linha - Histórico de Saldo 
-      <View style={{ width: 200, height: 200 }}>
-        {isActive ? (
-          <View>
-            <AnimatedTextInput
-              editable={false}
-              underlineColorAndroid={"transparent"}
-              style={styles.animatedText}
-              animatedProps={animatedText}
-            />
-            <AnimatedTextInput
-              editable={false}
-              underlineColorAndroid={"transparent"}
-              style={styles.dateText}
-              animatedProps={animatedDateText}
-            />
-          </View>
-        ) : (
-          <View>
-            <Text style={styles.animatedText}>
-              R$ {DATA[DATA.length - 1].price.toFixed(2)}
-            </Text>
-            <Text style={styles.dateText}>Hoje</Text>
-          </View>
-        )}
+      <ResumoContainer>
+        <ResumoTitleRow>
+          <SubHeader>Saldo em contas</SubHeader>
+        </ResumoTitleRow>
 
-        <CartesianChart
-          data={DATA}
-          xKey="day"
-          yKeys={["price"]}
-          chartPressState={state}
-          axisOptions={{
-            tickCount: 5,
-            labelOffset: { x: 3, y: 2 },
-            labelPosition: "inset",
-            formatYLabel: (value) => `${value}`,
-            formatXLabel: (value) => format(new Date(value), "dd/MM"),
-          }}
-        >
-          {({ points }) => (
-            <>
-              <Line points={points.price} color="blue" strokeWidth={4} />
-              {isActive && (
-                <ToolTip x={state.x.position} y={state.y.price.position} />
-              )}
-            </>
-          )}
-        </CartesianChart>
-      </View>
-*/}
-      {/* Gráfico de Pizza - Distribuição de Gastos */}
-      <View style={{ width: '100%', marginTop: 40 }}>
-        <Text style={styles.title}>Distribuição de Gastos</Text>
-        <View style={{ height: 200, width: "100%" }}>
+        <SaldoTotal>R$ {resumo.saldo.toFixed(2)}</SaldoTotal>
+
+        <ResumoRow>
+          <ResumoItem>
+            <ResumoIconCircle style={{ backgroundColor: "#22c55e" }}>
+              <ResumoIconText>↑</ResumoIconText>
+            </ResumoIconCircle>
+            <ResumoLabel>Receitas</ResumoLabel>
+            <Receita>R$ {resumo.receita.toFixed(2)}</Receita>
+          </ResumoItem>
+
+          <ResumoItem>
+            <ResumoIconCircle style={{ backgroundColor: "#ef4444" }}>
+              <ResumoIconText>↓</ResumoIconText>
+            </ResumoIconCircle>
+            <ResumoLabel>Despesas</ResumoLabel>
+            <Despesa>R$ {resumo.despesa.toFixed(2)}</Despesa>
+          </ResumoItem>
+        </ResumoRow>
+      </ResumoContainer>
+
+      <SubHeader>Distribuição de Gastos</SubHeader>
+
+      <View style={{ height: 200, width: "100%" }}>
+        <ChartSection>
           <PolarChart
             data={chartData}
             colorKey="color"
@@ -125,9 +88,7 @@ export const Relatorio = () => {
               {({ slice }) => (
                 <>
                   <Pie.Slice>
-                    <Pie.Label
-                      color="white"
-                    />
+                    <Pie.Label color="white" />
                   </Pie.Slice>
                   <Pie.SliceAngularInset
                     angularInset={{
@@ -139,32 +100,19 @@ export const Relatorio = () => {
               )}
             </Pie.Chart>
           </PolarChart>
-        </View>
+
+          <LegendWrapper>
+            {chartData.map((item, index) => (
+              <LegendItem key={index}>
+                <LegendColor style={{ backgroundColor: item.color }} />
+                <LegendText numberOfLines={1} ellipsizeMode="tail">
+                  {item.label}: R$ {item.value.toFixed(2)}
+                </LegendText>
+              </LegendItem>
+            ))}
+          </LegendWrapper>
+        </ChartSection>
       </View>
-    </View>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: "#fff",
-    flex: 1,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 12,
-  },
-  animatedText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: "#000",
-  },
-  dateText: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 12,
-  },
-});

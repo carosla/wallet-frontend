@@ -1,107 +1,145 @@
 import styled, { DefaultTheme } from "styled-components/native";
+import { RFValue } from "react-native-responsive-fontsize";
 
-export const Container = styled.View`
-    flex: 1;
-    /* padding: 15px; */
+// Container principal com padding
+export const Container = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+})`
+  flex: 1;
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE_100};
+  padding: ${RFValue(20)}px;
 `;
 
-export const BalanceImage = styled.ImageBackground`
-    width: 100%;
-    height: 215px;
+// Cabeçalho principal
+export const Header = styled.Text`
+  margin-top: ${RFValue(50)}px;
+  font-size: ${RFValue(20)}px;
+  font-family: ${({ theme }: { theme: DefaultTheme }) => theme.FONTS.POPPINSBOLD};
+  text-align: left;
+  margin-bottom: ${RFValue(10)}px;
 `;
 
-export const AmountValue = styled.Text`
-    font-size: 11px;
-    top: 60px;
-    left: 160px;
-    position: absolute;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.WHITE};
-    font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSREGULAR};
+// Subtítulo
+export const SubHeader = styled.Text`
+  font-size: ${RFValue(16)}px;
+  font-family: ${({ theme }: { theme: DefaultTheme }) => theme.FONTS.POPPINSMEDIUM};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.TEXT};
 `;
 
-export const ViewContent = styled.View`
-    padding: 30px;
-    align-items: center;
-    justify-content: center;
+// Card do gráfico
+export const ChartCard = styled.View`
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.SHAPE || '#fff'};
+  border-radius: ${RFValue(16)}px;
+  padding: ${RFValue(16)}px;
+  elevation: 2;
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.1;
+  shadow-radius: 4px;
+  margin-top: ${RFValue(24)}px;
 `;
 
-export const TitleAmount = styled.Text`
-    font-size: 16px;
-    line-height: 20px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY3};
-    font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSBOLD};
+// Container do gráfico e da legenda
+export const ChartSection = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: ${RFValue(12)}px;
 `;
 
-export const ValorTatal = styled.Text`
-    font-size: 30px;
-    line-height: 42px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
-    font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSBOLD};
+// Gráfico
+export const ChartWrapper = styled.View`
+  width: 45%;
+  height: ${RFValue(160)}px;
+  justify-content: center;
+  align-items: center;
 `;
 
-
-export const Footer = styled.View`
-    flex: 1;
+// Legenda
+export const LegendWrapper = styled.View`
+  width: 50%;
+  justify-content: center;
 `;
 
-export const ContentFlat = styled.View`
-    padding: 5px;
-    margin-right: 10px;
-    flex-direction: row;
+export const LegendItem = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: ${RFValue(8)}px;
 `;
 
-export const ContentFlatHeader = styled.View`
-    flex-direction: row;
-    align-items: center;
-    padding: 20px;
-    justify-content: space-between;
+export const LegendColor = styled.View`
+  width: ${RFValue(10)}px;
+  height: ${RFValue(10)}px;
+  border-radius: 5px;
+  margin-right: ${RFValue(8)}px;
 `;
 
-export const Title = styled.Text`
-    font-size: 20px;
-    margin-left: 13px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY1};
-    font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSBOLD};
+export const LegendText = styled.Text`
+  font-size: ${RFValue(12)}px;
+  font-family: ${({ theme }: { theme: DefaultTheme }) => theme.FONTS.POPPINSMEDIUM};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.TEXT};
+  flex-shrink: 1;
 `;
 
-export const ButtonVerTotos = styled.TouchableOpacity`
-    padding: 3px;
-    border-width: 1px;
-    border-radius: 30px;
-    border-color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
+// Resumo
+export const ResumoContainer = styled.View`
+  margin-top: ${RFValue(20)}px;
 `;
 
-export const ButtonTitleVertotos = styled.Text`
-    font-size: 12px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
-    font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSLIGHT};
+export const ResumoTitleRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: ${RFValue(8)}px;
 `;
 
-export const IconTransaction = styled.Image`
-    width: 60px;
-    height: 60px;
+export const ResumoLabel = styled.Text`
+  font-size: ${RFValue(14)}px;
+  font-family: ${({ theme }: { theme: DefaultTheme }) => theme.FONTS.POPPINSMEDIUM};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.TEXT};
 `;
 
-export const DetailsTransaction = styled.View`
-    flex: 1;
+export const SaldoTotal = styled.Text`
+  font-size: ${RFValue(26)}px;
+  font-family: ${({ theme }: { theme: DefaultTheme }) => theme.FONTS.POPPINSBOLD};
+  text-align: center;
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.TEXT};
+  margin-bottom: ${RFValue(12)}px;
 `;
 
-export const NameTransaction = styled.Text`
-    font-weight: 900;
-    font-size: 16px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY1};
-    font-weight: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSREGULAR};
+export const ResumoRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: ${RFValue(12)}px;
 `;
 
-export const SubtTitleTransaction = styled.Text`
-    font-size: 14px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY4};
-    font-weight: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSLIGHT};
+export const ResumoItem = styled.View`
+  flex: 1;
+  align-items: center;
 `;
 
-export const AmountTransaction = styled.Text`
-    font-weight: 900;
-    font-size: 16px;
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY1};
-    font-weight: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSREGULAR};
+export const ResumoIconCircle = styled.View`
+  width: ${RFValue(28)}px;
+  height: ${RFValue(28)}px;
+  border-radius: 14px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: ${RFValue(4)}px;
 `;
+
+export const ResumoIconText = styled.Text`
+  color: white;
+  font-size: ${RFValue(14)}px;
+  font-weight: bold;
+`;
+
+export const ResumoValue = styled.Text`
+  font-size: ${RFValue(18)}px;
+  font-family: ${({ theme }: { theme: DefaultTheme }) => theme.FONTS.POPPINSBOLD};
+  color: white;
+  margin-top: ${RFValue(2)}px;
+`;
+
+export const Receita = styled(ResumoValue)``;
+
+export const Despesa = styled(ResumoValue)``;
+export const Saldo = styled(ResumoValue)``;
