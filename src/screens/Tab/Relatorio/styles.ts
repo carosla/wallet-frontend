@@ -6,7 +6,6 @@ export const Container = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
   flex: 1;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE_100};
   padding: ${RFValue(20)}px;
 `;
 
@@ -139,7 +138,11 @@ export const ResumoValue = styled.Text`
   margin-top: ${RFValue(2)}px;
 `;
 
-export const Receita = styled(ResumoValue)``;
-
-export const Despesa = styled(ResumoValue)``;
+export const Receita = styled(ResumoValue)`
+    color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.TEXT};
+`;
+  
+export const Despesa = styled(ResumoValue)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.TEXT};
+`;
 export const Saldo = styled(ResumoValue)``;

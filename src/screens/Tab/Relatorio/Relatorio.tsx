@@ -74,9 +74,10 @@ export const Relatorio = () => {
         </ResumoRow>
       </ResumoContainer>
 
-      <SubHeader>Distribuição de Gastos</SubHeader>
+      
 
-      <View style={{ height: 200, width: "100%" }}>
+      <View style={{ height: 200, width: "100%", marginTop: 50}}>
+        <SubHeader>Distribuição de Gastos</SubHeader>
         <ChartSection>
           <PolarChart
             data={chartData}
