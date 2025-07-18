@@ -44,6 +44,7 @@ export const ChartSection = styled.View`
   justify-content: space-between;
   align-items: center;
   margin-top: ${RFValue(12)}px;
+  height: 100;
 `;
 
 // Gráfico
@@ -56,7 +57,7 @@ export const ChartWrapper = styled.View`
 
 // Legenda
 export const LegendWrapper = styled.View`
-  width: 50%;
+  width: 55%;
   justify-content: center;
 `;
 
@@ -146,3 +147,15 @@ export const Despesa = styled(ResumoValue)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.TEXT};
 `;
 export const Saldo = styled(ResumoValue)``;
+
+export const ReloadButton = styled.TouchableOpacity`
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 50px;
+  shadow-color: #000;
+  shadow-opacity: 0.2;
+  shadow-radius: 2px;
+  elevation: 6;
+  shadow-offset: 0px 3px;
+`;
+
