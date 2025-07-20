@@ -4,10 +4,20 @@ import {
   ActivityIndicator,
   Alert,
   TouchableOpacity,
+  Modal,
+  View,
+  Text,
 } from "react-native";
-import { CaretDoubleLeft, Trash } from "phosphor-react-native"; // Adicionar ícone Trash
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  CaretDoubleLeft,
+  Trash,
+  Calendar,
+  CaretDown,
+  TrashSimple
+} from "phosphor-react-native";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
+import dayjs from "dayjs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Header } from "../../../components/Header/Header";
@@ -22,6 +32,7 @@ import {
   ButtonGoBack,
 } from "./styles";
 import { API_URL } from "@env";
+import theme from "@src/styles/theme";
 
 interface Transaction {
   transacao_id: string;
@@ -38,26 +49,73 @@ interface Transaction {
 
 export const Transaction = () => {
   const navigation = useNavigation();
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [modalVisivel, setModalVisivel] = useState(false);
+
+  const meses = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ];
+
+  const [mesSelecionado, setMesSelecionado] = useState(() => {
+  const mesAtual = dayjs().month(); // 0 a 11
+  return meses[mesAtual]; // Ex: "Julho"
+});
+
+
+  const obterNumeroDoMes = (mes: string): string => {
+    const index = meses.findIndex(
+      (nome) => nome.toLowerCase() === mes.toLowerCase()
+    );
+    return String(index + 1).padStart(2, "0"); // "01" a "12"
+  };
+
+  const fetchTransactions = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const response = await axios.get(`${API_URL}/api/transacao`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data: Transaction[] = Array.isArray(response.data)
+        ? response.data
+        : [];
+
+      setAllTransactions(data);
+    } catch (error) {
+      console.error("Erro ao buscar transações:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filtrarPorMes = () => {
+    const mesNumero = obterNumeroDoMes(mesSelecionado);
+    const filtradas = allTransactions.filter((t) =>
+      dayjs(t.data).format("MM") === mesNumero
+    );
+    setFilteredTransactions(filtradas);
+  };
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-        const response = await axios.get(`${API_URL}/api/transacao`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setTransactions(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar transações:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchTransactions();
   }, []);
+
+  useEffect(() => {
+    filtrarPorMes();
+  }, [allTransactions, mesSelecionado]);
 
   const handleGoBackHome = () => {
     navigation.goBack();
@@ -73,11 +131,8 @@ export const Transaction = () => {
         }
       );
       if (response.status === 200) {
-        // Remover a transação excluída da lista
-        setTransactions((prevTransactions) =>
-          prevTransactions.filter(
-            (transaction) => transaction.transacao_id !== transacao_id
-          )
+        setAllTransactions((prev) =>
+          prev.filter((t) => t.transacao_id !== transacao_id)
         );
         Alert.alert("Transação excluída com sucesso");
       }
@@ -95,48 +150,132 @@ export const Transaction = () => {
     <>
       <Header iconLeft typeTransaction appName="Minhas Transações" />
       <Container>
-        <FlatList
-          data={transactions}
-          keyExtractor={(item) => item.transacao_id}
-          renderItem={({ item }) => (
-            <ContentFlat>
-              <IconTransaction
-                source={
-                  item.tipo_transacao.transacao === "entrada"
-                    ? require("../../../assets/income.png") // Ícone para entrada
-                    : require("../../../assets/expense.png") // Ícone para saída
-                }
+        {/* Seletor de Mês */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 10,
+            marginBottom: 20,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#f3f4f6",
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 20,
+            }}
+            onPress={() => setModalVisivel(true)}
+          >
+            <Text style={{ fontWeight: "600", fontSize: 16 }}>
+              {mesSelecionado}
+            </Text>
+            <CaretDown color="#000" size={16} style={{ marginLeft: 6 }} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Modal de seleção de mês */}
+        <Modal visible={modalVisivel} animationType="slide" transparent>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.4)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#fff",
+                width: "80%",
+                borderRadius: 10,
+                padding: 20,
+              }}
+            >
+              <Text
+                style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
+              >
+                Selecione o mês
+              </Text>
+              <FlatList
+                data={meses}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={{ paddingVertical: 10 }}
+                    onPress={() => {
+                      setMesSelecionado(item);
+                      setModalVisivel(false);
+                    }}
+                  >
+                    <Text style={{ fontSize: 16 }}>{item}</Text>
+                  </TouchableOpacity>
+                )}
               />
-              <DetailsTransaction>
-                <NameTransaction>{item.descricao}</NameTransaction>
-                <SubtTitleTransaction>
-                  {item.tipo_transacao.transacao} -{" "}
-                  {item.categorium?.categoria || "Sem categoria"}
-                </SubtTitleTransaction>
-              </DetailsTransaction>
+            </View>
+          </View>
+        </Modal>
 
-              <AmountTransaction
-                style={{
-                  color:
+        {/* Lista de transações filtradas */}
+        {filteredTransactions.length === 0 ? (
+          <Text
+            style={{
+              textAlign: "center",
+              fontStyle: "italic",
+              color: "#6b7280",
+              marginTop: 30,
+            }}
+          >
+            Não há transações neste período.
+          </Text>
+        ) : (
+          <FlatList
+            data={filteredTransactions}
+            keyExtractor={(item) => item.transacao_id}
+            renderItem={({ item }) => (
+              <ContentFlat>
+                <IconTransaction
+                  source={
                     item.tipo_transacao.transacao === "entrada"
-                      ? "blue"
-                      : "red",
-                }}
-              >
-                R$ {item.valor.toFixed(2)}
-              </AmountTransaction>
+                      ? require("../../../assets/recebimento.png")
+                      : require("../../../assets/pagamento.png")
+                  }
+                />
+                <DetailsTransaction>
+                  <NameTransaction>{item.descricao}</NameTransaction>
+                  <SubtTitleTransaction>
+                    {item.tipo_transacao.transacao} -{" "}
+                    {item.categorium?.categoria || "Sem categoria"}
+                  </SubtTitleTransaction>
+                </DetailsTransaction>
 
-              {/* Ícone de excluir transação */}
-              <TouchableOpacity
-                onPress={() => handleDeleteTransaction(item.transacao_id)}
-                style={{ marginLeft: 10 }}
-              >
-                <Trash size={24} color="red" />
-              </TouchableOpacity>
-            </ContentFlat>
-          )}
-          showsVerticalScrollIndicator={false}
-        />
+                <AmountTransaction
+                  style={{
+                    color:
+                      item.tipo_transacao.transacao === "entrada"
+                        ? theme.COLORS.BLUE
+                        : theme.COLORS.RED,
+                  }}
+                >
+                  R$ {item.valor.toFixed(2)}
+                </AmountTransaction>
+
+                <TouchableOpacity
+                  onPress={() => handleDeleteTransaction(item.transacao_id)}
+                  style={{ marginLeft: 10 }}
+                >
+                  <TrashSimple size={24} color="red" />
+                </TouchableOpacity>
+              </ContentFlat>
+            )}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+
         <ButtonGoBack onPress={handleGoBackHome}>
           <CaretDoubleLeft size={32} weight="light" />
         </ButtonGoBack>

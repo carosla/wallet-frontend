@@ -66,18 +66,31 @@ export const Input = styled.TextInput`
 `;
 
 export const Button = styled.TouchableOpacity`
-  width: 210px;
+  width: 280px;
   height: 60px;
   background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.PURPLEDARK1};
   justify-content: center;
   align-items: center;
-  border-radius: 20px;
+  border-radius: 9px;
 `;
 
 export const ButtonText = styled.Text`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE};
   font-size: 18px;
   font-weight: bold;
+`;
+
+export const ButtonVerTotos = styled.TouchableOpacity`
+    padding: 3px;
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
+`;
+
+export const ButtonTitleVertotos = styled.Text`
+    font-size: 12px;
+    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
+    font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSLIGHT};
 `;
 
 export const ButtonGoBack = styled(Pressable)`

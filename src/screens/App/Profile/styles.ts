@@ -1,12 +1,8 @@
-import styled, { DefaultTheme } from 'styled-components/native';
 
-export const Container = styled.View`
-    padding: 20px;
-`;
 
 export const Header = styled.View`
     align-items: center;
-    margin-bottom: 20px;
+    flex-direction: row;
 `;
 
 export const Avatar = styled.Image`
@@ -49,11 +45,117 @@ export const EditButton = styled.TouchableOpacity`
     align-self: center;
 `;
 
+export const ContainerAtributos = styled.View`
+  justify-content: center;
+  align-items: center;
+  font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSBOLD};
+  margin-top: 50px;
+
+`;
+
+export const ContainerButton = styled.View`
+  margin-top: 60px;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+`;
+
 export const EditableInput = styled.TextInput`
-    border: 1px solid ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.GRAY4};
+    border: 1px solid ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.PURPLEDARK1};
     border-radius: 8px;
     padding: 10px;
     font-size: 16px;
-    color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.GRAY2};
+    color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.BLACK};
     margin-bottom: 10px;
+    background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE};
+    width: 200px;
+`;
+
+import { Pressable } from 'react-native';
+import styled, { DefaultTheme } from 'styled-components/native';
+
+export const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+`;
+
+export const ContainerHeader = styled.View`
+  flex-direction: row;
+  background-color: #f5f5f5;
+`;
+
+export const ContainerCampos = styled.View`
+  margin-top: 120px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+`;
+
+export const Input = styled.TextInput`
+  width: 100%;
+  height: 50px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #fff;
+`;
+
+export const ContainerBotoes = styled.View`
+  margin-top: 40px;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+`;
+
+export const Button = styled.TouchableOpacity`
+  width: 280px;
+  height: 50px;
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.PURPLEDARK1};
+  justify-content: center;
+  align-items: center;
+  border-radius: 9px;
+`;
+
+export const ButtonText = styled.Text`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE};
+  font-size: 18px;
+  font-weight: bold;
+`;
+
+export const ButtonGoBack = styled(Pressable)`
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  padding: 10px;
+  border-radius: 30px;
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.GRAY4};
+`;
+
+export const Title = styled.Text`
+  font-family: "Poppins-Bold";
+  font-size: 16px;
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.BLACK};
+  margin-bottom: 4px;
+`;
+
+export const SubTitle = styled.Text`
+  font-family: "Poppins-Medium";
+  font-size: 16px;
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.BLACK};
+`;
+
+export const InputInfo = styled.Text`
+  font-family: "Poppins-Regular";
+  font-size: 15px;
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.BLACK};
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE};
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  width: 300px;
 `;

@@ -17,8 +17,8 @@ import {
 
 import { 
   CaretDoubleLeft, 
-  Trash, 
-  PencilSimple 
+  TrashSimple, 
+  Pencil 
 } from "phosphor-react-native";
 
 import { useNavigation } from "@react-navigation/native";
@@ -162,7 +162,7 @@ export const ListaCategorias = () => {
                 onPress={() => handleEditCategoria(item)}
                 style={{ marginLeft: 10 }}
               >
-                <PencilSimple size={24} color="blue" />
+                <Pencil size={24} color="blue" />
               </TouchableOpacity>
 
               {/* Ícone de excluir categoria */}
@@ -170,7 +170,7 @@ export const ListaCategorias = () => {
                 onPress={() => handleDeleteCategoria(item.categoria_id)}
                 style={{ marginLeft: 10 }}
               >
-                <Trash size={24} color="red" />
+                <TrashSimple size={24} color="red" />
               </TouchableOpacity>
             </ContentFlat>
           )}

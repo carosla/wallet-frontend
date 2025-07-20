@@ -70,7 +70,7 @@ export const Header = ({
             </ContentHeader>
             {avatarRight && (
                 <Avatar
-                    source={{ uri: 'https://avatars.githubusercontent.com/u/89313900?v=4' }}
+                    source={require('./../../assets/mulher.png')}
                 />
             )}
         </Container>

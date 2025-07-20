@@ -18,7 +18,7 @@ import EllipseOnePng from "../../../assets/ellipse1.png";
 import EllipseTwoPng from "../../../assets/ellipse2.png";
 import { Header } from "../../../components/Header/Header";
 import { API_URL } from "@env";
-import { ArrowsClockwise } from "phosphor-react-native"; // Alterado para o ícone Refresh
+import { ArrowsClockwise } from "phosphor-react-native";
 
 import {
   Container,
@@ -50,8 +50,9 @@ import {
   AmountTransaction,
   EllipseOne,
   EllipseTwo,
-  ReloadButton, // Estilo do botão de reload
+  ReloadButton,
 } from "./styles";
+import theme from "@src/styles/theme";
 
 interface Transaction {
   transacao_id: string;
@@ -74,118 +75,108 @@ const formatDate = (isoString: string) => {
   return `${day}/${month}/${year}`;
 };
 
-
 export const Carteira = () => {
   const navigation = useNavigation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalBalance, setTotalBalance] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [nomePerfil, setNomePerfil] = useState<string | null>(null);
+  const [gastoHoje, setGastoHoje] = useState(0);
 
-  
-  // Função para buscar as transações da API
   const fetchTransactions = async () => {
-    setLoading(true); // Ativar o carregamento antes de buscar os dados
+    setLoading(true);
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await axios.get(`${API_URL}/api/transacao`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const transacoes = Array.isArray(response.data) ? response.data : [];
 
-      // Ordenar do mais recente para o mais antigo
-    transacoes.sort((a: Transaction, b: Transaction) => {
-      return new Date(b.data).getTime() - new Date(a.data).getTime();
-    });
+      const [transacoesRes, perfilRes] = await Promise.all([
+        axios.get(`${API_URL}/api/transacao`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${API_URL}/api/perfil`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
 
-      // Calculando o saldo total (somando as entradas e subtraindo as saídas)
+      const transacoes = Array.isArray(transacoesRes.data) ? transacoesRes.data : [];
+      transacoes.sort((a: Transaction, b: Transaction) => new Date(b.data).getTime() - new Date(a.data).getTime());
+
       const saldo = transacoes.reduce((acc: number, transacao: Transaction) => {
-        if (transacao.tipo_transacao.transacao === "entrada") {
-          return acc + transacao.valor;
-        } else {
-          return acc - transacao.valor;
-        }
+        return transacao.tipo_transacao.transacao === "entrada"
+          ? acc + transacao.valor
+          : acc - transacao.valor;
+      }, 0);
+
+      const hoje = new Date().toISOString().slice(0, 10);
+      const totalGastoHoje = transacoes.reduce((acc: number, transacao: Transaction) => {
+        const dataTransacao = new Date(transacao.data).toISOString().slice(0, 10);
+        return transacao.tipo_transacao.transacao != 'entrada' && dataTransacao === hoje
+          ? acc + transacao.valor
+          : acc;
       }, 0);
 
       setTransactions(transacoes.length > 0 ? transacoes.slice(0, 5) : []);
       setTotalBalance(saldo);
+      setNomePerfil(perfilRes.data.nome || perfilRes.data.login);
+      setGastoHoje(totalGastoHoje);
     } catch (error: unknown) {
-      // Verifica se o erro é do tipo AxiosError
       if (axios.isAxiosError(error)) {
-        console.error("Erro ao buscar transações:", error.response?.data || error);
-  
-        Alert.alert(
-          "Erro ao carregar transações",
-          error.response?.data?.mensagem || "Erro desconhecido."
-        );
+        console.error("Erro ao buscar dados:", error.response?.data || error);
+        Alert.alert("Erro ao carregar dados", error.response?.data?.mensagem || "Erro desconhecido.");
       } else {
         console.error("Erro inesperado:", error);
         Alert.alert("Erro", "Ocorreu um erro inesperado.");
       }
     } finally {
-      setLoading(false); // Desativar o carregamento após os dados serem carregados
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTransactions(); // Chama ao carregar a tela pela primeira vez
+    fetchTransactions();
   }, []);
-  
-  
 
-  // Função para navegar para a tela de transações completas
   const handleGoTransaction = () => {
     navigation.navigate("Transaction");
   };
 
-  // Função de reload para atualizar as transações
   const handleReload = () => {
-    fetchTransactions(); // Recarrega os dados
+    fetchTransactions();
   };
 
-   if (loading) {
-      return <ActivityIndicator size="large" color="#000" />;
-    }
+  if (loading) {
+    return <ActivityIndicator size="large" color="#000" />;
+  }
 
   return (
     <Container>
-      <Header textLeft avatarRight appName="Wallet" />
+      <Header textLeft avatarRight appName={"Olá, " + (nomePerfil || "Wallet")} />
 
       <ViewContainer>
         <Content>
           <EllipseOne source={EllipseOnePng} />
           <ViewBalanceLeft>
             <TitleValor>Valor Total</TitleValor>
-            <TitleValorConta>
-              R$ {totalBalance.toFixed(2).replace(".", ",")}
-            </TitleValorConta>
+            <TitleValorConta>R$ {totalBalance.toFixed(2).replace(".", ",")}</TitleValorConta>
           </ViewBalanceLeft>
 
           <ViewBalanceRight>
-            <TitleCartao>Cartão</TitleCartao>
-            <TitleNomeCartao>Wallet</TitleNomeCartao>
+            <TitleCartao>Gasto Hoje</TitleCartao>
+            <TitleNomeCartao>R$ {gastoHoje.toFixed(2)}</TitleNomeCartao>
+           
           </ViewBalanceRight>
           <EllipseTwo source={EllipseTwoPng} />
         </Content>
 
         <Body>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Recebimentos")}
-            style={{ alignItems: "center" }}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Recebimentos")} style={{ alignItems: "center" }}>
             <IconPayment source={Payments} />
             <TitlePayments>Recebimentos</TitlePayments>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Transacao")}
-            style={{ alignItems: "center" }}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Transacao")} style={{ alignItems: "center" }}>
             <IconPayOut source={PayOut} />
             <TitlePayOut>Pagamentos</TitlePayOut>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Categorias")}
-            style={{ alignItems: "center" }}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Categorias")} style={{ alignItems: "center" }}>
             <IconTopUp source={TopUp} />
             <TitleTopUp>Categorias</TitleTopUp>
           </TouchableOpacity>
@@ -193,64 +184,56 @@ export const Carteira = () => {
       </ViewContainer>
 
       <Footer>
-        {loading ? (
-          <ActivityIndicator size="large" color="#000" />
-        ) : (
-          <FlatList
-            data={transactions}
-            keyExtractor={(item) => item.transacao_id}
-            renderItem={({ item }) => (
-              <ContentFlat>
-                <IconTransaction
-                  source={
+        <FlatList
+          data={transactions}
+          keyExtractor={(item) => item.transacao_id}
+          renderItem={({ item }) => (
+            <ContentFlat>
+              <IconTransaction
+                source={
+                  item.tipo_transacao.transacao === "entrada"
+                    ? require("../../../assets/recebimento.png")
+                    : require("../../../assets/pagamento.png")
+                }
+              />
+              <DetailsTransaction>
+                <NameTransaction>{item.descricao}</NameTransaction>
+                <SubtTitleTransaction>
+                  {formatDate(item.data)} - {item.categorium?.categoria || "Sem categoria"}
+                </SubtTitleTransaction>
+              </DetailsTransaction>
+              <AmountTransaction
+                style={{
+                  color:
                     item.tipo_transacao.transacao === "entrada"
-                      ? require("../../../assets/income.png")
-                      : require("../../../assets/expense.png")
-                  }
-                />
-
-                <DetailsTransaction>
-                  <NameTransaction>{item.descricao}</NameTransaction>
-                  <SubtTitleTransaction>
-                    {formatDate(item.data)} -{" "}
-                    {item.categorium?.categoria || "Sem categoria"}
-                  </SubtTitleTransaction>
-                </DetailsTransaction>
-
-                <AmountTransaction
-                  style={{
-                    color:
-                      item.tipo_transacao.transacao === "entrada"
-                        ? "blue"
-                        : "red",
-                  }}
-                >
-                  R$ {item.valor.toFixed(2)}
-                </AmountTransaction>
-              </ContentFlat>
-            )}
-            ListHeaderComponent={
-              <ContentFlatHeader>
-                <Title>Minhas Transações</Title>
-                <ReloadButton onPress={handleReload}>
-                  <ArrowsClockwise size={20} color="black" />
-                </ReloadButton>
-                <ButtonVerTotos onPress={handleGoTransaction}>
-                  <ButtonTitleVertotos>Ver Todos</ButtonTitleVertotos>
-                </ButtonVerTotos>
-                
-              </ContentFlatHeader>
-            }
-            ListEmptyComponent={
-              <View style={{ alignItems: "center", marginTop: 20 }}>
-                <Text style={{ fontSize: 16, color: "#555" }}>
-                  Nenhuma transação encontrada.
-                </Text>
-              </View>
-            }
-            showsVerticalScrollIndicator={false}
-          />
-        )}
+                      ? theme.COLORS.BLUE
+                      : theme.COLORS.RED,
+                }}
+              >
+                R$ {item.valor.toFixed(2)}
+              </AmountTransaction>
+            </ContentFlat>
+          )}
+          ListHeaderComponent={
+            <ContentFlatHeader>
+              <Title>Minhas Transações</Title>
+              <ReloadButton onPress={handleReload}>
+                <ArrowsClockwise size={17} color="black" />
+              </ReloadButton>
+              <ButtonVerTotos onPress={handleGoTransaction}>
+                <ButtonTitleVertotos>Ver Todos</ButtonTitleVertotos>
+              </ButtonVerTotos>
+            </ContentFlatHeader>
+          }
+          ListEmptyComponent={
+            <View style={{ alignItems: "center", marginTop: 20 }}>
+              <Text style={{ fontSize: 16, color: "#555" }}>
+                Nenhuma transação encontrada.
+              </Text>
+            </View>
+          }
+          showsVerticalScrollIndicator={false}
+        />
       </Footer>
     </Container>
   );

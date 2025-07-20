@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Alert, TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import { useTheme } from "styled-components/native";
-import { Pen, Trash } from "phosphor-react-native";
+import { Pen } from "phosphor-react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Profile as ComponentProfile } from "../../../components/Profile";
 import { GoBack } from "../../../components/GoBack";
 import {
   Container,
   Header,
   Avatar,
-  UserName,
-  InfoContainer,
-  Label,
-  InfoText,
-  EditButton,
   Row,
   EditableInput,
+  Button,
+  ButtonText,
+  ContainerAtributos,
+  ContainerHeader,
+  ContainerButton,
+  Title,
+  SubTitle,
+  InputInfo,
 } from "./styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
 import axios from "axios";
+import { Header as HeaderComponent } from "../../../components/Header/Header";
+import theme from "@src/styles/theme";
 
 export const Profile = () => {
   const navigation = useNavigation();
@@ -35,7 +39,6 @@ export const Profile = () => {
   const [token, setToken] = useState<string | null>(null);
   const nomeExibido = nomePerfil ?? login;
 
-  // Buscar token
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem("token");
@@ -44,7 +47,6 @@ export const Profile = () => {
     fetchToken();
   }, []);
 
-  // Buscar dados do perfil
   useEffect(() => {
     const buscarPerfil = async () => {
       if (!token) return;
@@ -74,10 +76,6 @@ export const Profile = () => {
     buscarPerfil();
   }, [token]);
 
-  const toggleEdicao = () => {
-    setEditando(!editando);
-  };
-
   const salvarEdicao = async () => {
     if (!perfilId) return;
 
@@ -106,37 +104,42 @@ export const Profile = () => {
 
   return (
     <>
-      <GoBack />
+      <ContainerHeader>
+        <GoBack /> <HeaderComponent appName="Perfil" />
+      </ContainerHeader>
+
       <Container>
         <Header>
-          <Avatar
-            source={{ uri: fotoPerfil || "https://placehold.co/100x100" }}
-          />
+          <Avatar source={require("../../../assets/mulher.png")} />
+          <View>
+            <Title>Nome</Title>
+            {editando ? (
+              <EditableInput
+                value={nomePerfil || ""}
+                onChangeText={setNomePerfil}
+                placeholder="Nome do perfil"
+              />
+            ) : (
+              <SubTitle>{nomeExibido}</SubTitle>
+            )}
+          </View>
+
+          <TouchableOpacity
+            onPress={() => setEditando(true)}
+            style={{ marginLeft: 10 }}
+          >
+            <Pen size={24} color={COLORS.PURPLEDARK1} />
+          </TouchableOpacity>
         </Header>
 
-        <Row>
-          {editando ? (
-            <EditableInput
-              value={nomePerfil || ""}
-              onChangeText={setNomePerfil}
-              placeholder="Nome do perfil"
-            />
-          ) : (
-            <UserName>{nomeExibido}</UserName>
-          )}
-          <EditButton onPress={() => setEditando(true)}>
-            <Pen size={24} color={COLORS.PURPLEDARK1} />
-          </EditButton>
-        </Row>
+        <ContainerAtributos>
+          <Title>Email</Title>
+          <InputInfo>{email}</InputInfo>
 
-        <InfoContainer>
-          <Label>Email:</Label>
-          <InfoText>{email}</InfoText>
+          <Title>Login</Title>
+          <InputInfo>{login}</InputInfo>
 
-          <Label>Login:</Label>
-          <InfoText>{login}</InfoText>
-
-          <Label>Descrição:</Label>
+          <Title>Descrição</Title>
           {editando ? (
             <EditableInput
               value={descricao}
@@ -144,20 +147,30 @@ export const Profile = () => {
               multiline
             />
           ) : (
-            <InfoText>{descricao}</InfoText>
+            <InputInfo>{descricao}</InputInfo>
           )}
-        </InfoContainer>
+        </ContainerAtributos>
 
         {editando && (
-        <>
-          <EditButton onPress={salvarEdicao}>
-            <InfoText style={{ color: COLORS.PURPLEDARK1 }}>Salvar</InfoText>
-          </EditButton>
+          <ContainerButton>
+            <Button onPress={salvarEdicao}>
+              <ButtonText>Salvar</ButtonText>
+            </Button>
 
-            <EditButton onPress={() => setEditando(false)} style={{ marginTop: 8 }}>
-      <InfoText style={{ color: COLORS.GRAY_100, textAlign: 'center' }}>Cancelar</InfoText>
-    </EditButton>
-        </>
+            <Button
+              onPress={() => setEditando(false)}
+              style={{
+                borderWidth: 1,
+                borderColor: COLORS.GRAY1,
+                marginTop: 10,
+                backgroundColor: "transparent",
+              }}
+            >
+              <ButtonText style={{ color: theme.COLORS.GRAY1 }}>
+                Cancelar
+              </ButtonText>
+            </Button>
+          </ContainerButton>
         )}
       </Container>
     </>

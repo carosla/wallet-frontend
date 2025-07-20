@@ -55,12 +55,12 @@ export const Settings = () => {
                     onPress={handleGoPerfilUser}
                 />
 
-                <Profile
+                {/*<Profile
                     iconLeft
                     typeLogin
                     name='Configuração Login'
                     onPress={() => { }}
-                />
+                />*/}
 
 
                 <ViewFooter>

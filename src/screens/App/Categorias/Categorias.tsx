@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import { Container, ButtonText, ContainerAtributos, Button, ContainerButton, ContainerHeader, ContainerImage, ImageCategoria, ImageButton } from "./styles";
-import { CaretDoubleLeft } from "phosphor-react-native";
+import {
+  Container,
+  ButtonText,
+  ContainerAtributos,
+  Button,
+  ContainerButton,
+  ContainerHeader,
+  ContainerImage,
+  ImageCategoria,
+  ImageButton,
+  ButtonVerTotos,
+  ButtonTitleVertotos,
+} from "./styles";
+import { CaretDoubleLeft, List } from "phosphor-react-native";
 import { ButtonGoBack } from "./styles";
 import InputDescricao from "../../../components/Input_Descricao";
 import COLORS from "../../../styles/theme";
 import { Header } from "@src/components/Header/Header";
-import Edit from '../../../assets/edit.png';
+import Edit from "../../../assets/edit.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import { API_URL } from "@env";
+import theme from "../../../styles/theme";
 
 export const Categorias = () => {
   const navigation = useNavigation();
@@ -21,7 +34,7 @@ export const Categorias = () => {
   useEffect(() => {
     // Aqui você pode pegar o token de onde ele está armazenado
     const fetchToken = async () => {
-      const storedToken = await AsyncStorage.getItem('token'); // Exemplo, substitua com seu método de obtenção do token
+      const storedToken = await AsyncStorage.getItem("token"); // Exemplo, substitua com seu método de obtenção do token
       setToken(storedToken || "");
     };
     fetchToken();
@@ -47,11 +60,11 @@ export const Categorias = () => {
             },
           }
         );
-        
+
         // Verifica a resposta da API
         if (response.status === 201) {
-          Alert.alert('Categoria cadastrada com sucesso');
-          navigation.navigate('TabRoutes'); // Navega para a tela de Carteira
+          Alert.alert("Categoria cadastrada com sucesso");
+          navigation.navigate("TabRoutes"); // Navega para a tela de Carteira
         } else {
           console.error("Erro ao cadastrar categoria:", response.data);
         }
@@ -69,7 +82,7 @@ export const Categorias = () => {
 
   const handleViewCategories = () => {
     // Navega para a tela de visualização das categorias
-    navigation.navigate('ListaCategorias'); // Aqui, 'ViewCategories' deve ser o nome da tela de visualização das categorias
+    navigation.navigate("ListaCategorias"); // Aqui, 'ViewCategories' deve ser o nome da tela de visualização das categorias
   };
 
   return (
@@ -78,56 +91,56 @@ export const Categorias = () => {
         <Header appName="Categorias" />
       </ContainerHeader>
       <Container>
-        <ContainerImage
+        <View
           style={{
-            shadowColor: COLORS.COLORS.BLACK,
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
-            elevation: 6,
+            marginBottom: 10,
+            marginLeft: 140
           }}
         >
-          <ImageButton>
-            <ImageCategoria source={Edit} />
-          </ImageButton>
-        </ContainerImage>
+          <ButtonVerTotos
+            title="Visualizar Categorias"
+            onPress={handleViewCategories}
+          >
+            <ButtonTitleVertotos>Visualizar Categorias</ButtonTitleVertotos>
+          </ButtonVerTotos>
+        </View>
 
         <ContainerAtributos>
-          <InputDescricao
-            placeholder="Entre com o nome da categoria"
-            value={categoria}  // Usando o estado correto
-            onChangeText={setCategoria}  // Atualiza o estado corretamente
-          />
-        </ContainerAtributos>
-
-          <Button
-            onPress={handleSendData}  // Chama a função para enviar os dados
+          <View
             style={{
-              shadowColor: COLORS.COLORS.PURPLEDARK2,
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 4,
-              elevation: 6,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: "#ccc",
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              backgroundColor: "#fff",
+              width: "80%",
+              marginBottom: 10,
             }}
           >
-            <ButtonText>Cadastrar</ButtonText>
-          </Button>
+            <InputDescricao
+              placeholder="Digite a categoria"
+              placeholderTextColor={"#999"}
+              value={categoria} // Usando o estado correto
+              onChangeText={setCategoria} // Atualiza o estado corretamente
+              style={{
+                width: "100%",
+                borderBottomColor: "transparent",
+                marginTop: 10,
+                fontFamily: theme.FONTS.POPPINSREGULAR,
+              }}
+            />
+            <List size={20} color="#888" />
+          </View>
+        </ContainerAtributos>
 
-        {/* Botão para visualizar as categorias */}
         <Button
-          title="Visualizar Categorias"
-          onPress={handleViewCategories} // Chama a função para visualizar categorias
-          style={{
-            backgroundColor: COLORS.COLORS.PURPLEDARK2,
-            shadowColor: COLORS.COLORS.PURPLEDARK2,
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
-            elevation: 6,
-            marginTop: 20,
-          }}
+          onPress={handleSendData} // Chama a função para enviar os dados
+          style={{}}
         >
-          <ButtonText>Visualizar Categorias</ButtonText>
+          <ButtonText>Cadastrar</ButtonText>
         </Button>
 
         <ButtonGoBack onPress={handleGoBackHome}>

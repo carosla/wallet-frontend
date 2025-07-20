@@ -9,6 +9,7 @@ export const ContentFlat = styled.View`
     padding: 10px;
     margin-right: 10px;
     flex-direction: row;
+    align-items: center;
 `;
 
 export const IconTransaction = styled.Image`
