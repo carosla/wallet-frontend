@@ -264,7 +264,7 @@ export const Relatorio = () => {
             <Receita>R$ {receita.toFixed(2).replace(".", ",")}</Receita>
           </ResumoItem>
 
-          <ResumoIconCircle style={{ backgroundColor: "#ef4444" }}>
+          <ResumoIconCircle style={{ backgroundColor: theme.COLORS.RED, marginLeft: 20 }}>
             <ResumoIconText>↓</ResumoIconText>
           </ResumoIconCircle>
           <ResumoItem>

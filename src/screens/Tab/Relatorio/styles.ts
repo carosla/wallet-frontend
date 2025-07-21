@@ -126,7 +126,7 @@ export const ResumoRow = styled.View`
 
 export const ResumoItem = styled.View`
   flex: 1;
-  margin-left: ${RFValue(8)}px;
+  margin-left: ${RFValue(6)}px;
 `;
 
 export const ResumoIconCircle = styled.View`

@@ -3,6 +3,8 @@ import React, {
   useState 
 } from "react";
 
+import theme from "@src/styles/theme";
+
 import { 
   FlatList, 
   ActivityIndicator, 
@@ -162,7 +164,7 @@ export const ListaCategorias = () => {
                 onPress={() => handleEditCategoria(item)}
                 style={{ marginLeft: 10 }}
               >
-                <Pencil size={24} color="blue" />
+                <Pencil size={24} color={theme.COLORS.BLUE} />
               </TouchableOpacity>
 
               {/* Ícone de excluir categoria */}
@@ -170,7 +172,7 @@ export const ListaCategorias = () => {
                 onPress={() => handleDeleteCategoria(item.categoria_id)}
                 style={{ marginLeft: 10 }}
               >
-                <TrashSimple size={24} color="red" />
+                <TrashSimple size={24} color={theme.COLORS.RED} />
               </TouchableOpacity>
             </ContentFlat>
           )}

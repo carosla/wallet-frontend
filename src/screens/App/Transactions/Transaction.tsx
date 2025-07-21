@@ -314,7 +314,7 @@ export const Transaction = () => {
                   onPress={() => handleDeleteTransaction(item.transacao_id)}
                   style={{ marginLeft: 10 }}
                 >
-                  <TrashSimple size={24} color="red" />
+                  <TrashSimple size={24} color={theme.COLORS.RED} />
                 </TouchableOpacity>
               </ContentFlat>
             )}

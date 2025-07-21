@@ -47,7 +47,6 @@ export const Cadastro = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <ContentHeader>
-                    <Title>Seja bem vindo {'\n'} a App Wallet</Title>
                     <Description>CADASTRO</Description>
                 </ContentHeader>
 

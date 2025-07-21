@@ -10,7 +10,7 @@ export const ContentHeader = styled.View`
     width: 100%;
     margin-left: -10px;
     margin-top: 40px;
-    margin-bottom: 120px;
+    margin-bottom: 90px;
     align-items: center;
     justify-content: space-between;
     margin-top: 100px;
@@ -61,7 +61,7 @@ export const TitleButtonSignUp2 = styled.Text`
     font-size: 17px;
     margin-left: 10px;
     font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSBOLD};
-    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.BLUE};
+    color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
 `;
 
 export const ContentForgotPassword = styled.View`

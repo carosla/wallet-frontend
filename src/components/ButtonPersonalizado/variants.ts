@@ -23,7 +23,7 @@ export interface ButtonVariant {
 const buttonPrimary: ButtonVariant = {
     enabled: {
         button: {
-            backgroundColor: theme.COLORS.PRIMARY,
+            backgroundColor: theme.COLORS.PURPLEDARK1,
         },
         title: {
             color: theme.COLORS.WHITE,
