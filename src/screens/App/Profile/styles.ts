@@ -78,6 +78,7 @@ export const EditableInputDescription = styled.TextInput`
     margin-bottom: 10px;
     background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE};
     width: 300px;
+    text-align: top;
 `;
 
 import { Pressable } from 'react-native';
@@ -168,3 +169,4 @@ export const InputInfo = styled.Text`
   margin-bottom: 12px;
   width: 300px;
 `;
+

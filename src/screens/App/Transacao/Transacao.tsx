@@ -136,6 +136,7 @@ export const Transacao = () => {
             keyboardType="numeric"
             value={valor}
             onChangeText={setValor}
+            returnKeyType="done"
             placeholderTextColor={COLORS.COLORS.BLACK}
           />
         </ContainerValor>
@@ -159,6 +160,7 @@ export const Transacao = () => {
               placeholder="Entre com a descrição"
               placeholderTextColor={"#999"}
               value={descricao}
+              returnKeyType="done"
               onChangeText={setDescricao}
               style={{
                 width: "100%",

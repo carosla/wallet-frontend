@@ -12,7 +12,7 @@ import {
   ButtonGoBack,
 } from "./styles";
 import { Calendar, Pen, CaretDoubleLeft } from "phosphor-react-native";
-import { Text, Alert, TouchableOpacity, View, Modal } from "react-native";
+import { Text, Alert, TouchableOpacity, View, Modal, Keyboard } from "react-native";
 import InputDescricao from "../../../components/Input_Descricao";
 import InputValor from "../../../components/Input_Valor";
 import COLORS from "../../../styles/theme";
@@ -56,6 +56,10 @@ export const Recebimentos = () => {
     setShowDatePicker(false);
   };
 
+  const handleSubmit = () => {
+    Keyboard.dismiss();
+  };
+
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem("token");
@@ -88,7 +92,9 @@ export const Recebimentos = () => {
   }, [token]);
 
   const handleSendData = async () => {
-    const formattedDate = selectedDate.toISOString().split("T")[0]; // yyyy-mm-dd
+    const localDate = new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000);
+    const formattedDate = localDate.toISOString().split("T")[0];
+
 
     try {
       const response = await axios.post(
@@ -135,6 +141,8 @@ export const Recebimentos = () => {
             keyboardType="numeric"
             value={valor}
             onChangeText={setValor}
+            returnKeyType="done"
+            onSubmitEditing={handleSubmit}
             placeholderTextColor={COLORS.COLORS.BLACK}
           />
         </ContainerValor>
@@ -159,6 +167,8 @@ export const Recebimentos = () => {
               placeholderTextColor={"#999"}
               value={descricao}
               onChangeText={setDescricao}
+              onSubmitEditing={handleSubmit}
+              returnKeyType="done"
               style={{
                 width: "100%",
                 borderBottomColor: "transparent",

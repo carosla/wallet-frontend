@@ -124,6 +124,7 @@ export const Categorias = () => {
               placeholder="Digite a categoria"
               placeholderTextColor={"#999"}
               value={categoria} // Usando o estado correto
+              returnKeyType="done"
               onChangeText={setCategoria} // Atualiza o estado corretamente
               style={{
                 width: "100%",

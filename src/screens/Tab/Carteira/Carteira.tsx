@@ -68,12 +68,23 @@ interface Transaction {
 }
 
 const formatDate = (isoString: string) => {
-  const date = new Date(isoString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
+  if (!isoString) return "Data inválida";
+
+  try {
+    // Pega só a parte da data (sem horário)
+    const onlyDate = isoString.split("T")[0];
+    const [year, month, day] = onlyDate.split("-");
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
+
+    return date.toLocaleDateString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
+  } catch {
+    return "Data inválida";
+  }
 };
+
+
 
 export const Carteira = () => {
   const navigation = useNavigation();
@@ -161,7 +172,8 @@ export const Carteira = () => {
 
           <ViewBalanceRight>
             <TitleCartao>Gasto Hoje</TitleCartao>
-            <TitleNomeCartao>R$ {gastoHoje.toFixed(2)}</TitleNomeCartao>
+            <TitleNomeCartao>R$ {Number(gastoHoje || 0).toFixed(2).replace(".", ",")}</TitleNomeCartao>
+
            
           </ViewBalanceRight>
           <EllipseTwo source={EllipseTwoPng} />
@@ -210,7 +222,7 @@ export const Carteira = () => {
                       : theme.COLORS.RED,
                 }}
               >
-                R$ {item.valor.toFixed(2)}
+                R$ {item.valor}
               </AmountTransaction>
             </ContentFlat>
           )}

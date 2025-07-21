@@ -3,7 +3,9 @@ import {
   Alert,
   FlatList,
   Image,
+  Modal,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -15,7 +17,6 @@ import {
   Container,
   Header,
   Avatar,
-  Row,
   EditableInput,
   Button,
   ButtonText,
@@ -25,7 +26,6 @@ import {
   Title,
   SubTitle,
   InputInfo,
-  EditableInputDescription,
 } from "./styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "@env";
@@ -62,6 +62,7 @@ export const Profile = () => {
   const [login, setLogin] = useState<string>("");
 
   const [editando, setEditando] = useState(false);
+  const [modalDescricaoVisivel, setModalDescricaoVisivel] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
   const nomeExibido = nomePerfil ?? login;
@@ -93,7 +94,6 @@ export const Profile = () => {
         setEmail(email || "");
         setLogin(login || "");
 
-        // Encontrar o avatar correspondente pelo nome
         const avatarEncontrado = avatarOptions.find(a => a.nome === foto_perfil);
         setFotoPerfil(avatarEncontrado || avatarOptions[0]);
       } catch (error) {
@@ -114,7 +114,7 @@ export const Profile = () => {
         {
           nome: nomePerfil,
           descricao,
-          foto_perfil: fotoPerfil.nome, // salva apenas o nome da imagem
+          foto_perfil: fotoPerfil.nome,
         },
         {
           headers: {
@@ -124,6 +124,7 @@ export const Profile = () => {
       );
 
       setEditando(false);
+      setModalDescricaoVisivel(false);
       Alert.alert("Sucesso", "Dados atualizados com sucesso");
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
@@ -152,6 +153,7 @@ export const Profile = () => {
                 value={nomePerfil || ""}
                 onChangeText={setNomePerfil}
                 placeholder="Nome do perfil"
+                returnKeyType="done"
               />
             ) : (
               <SubTitle>{nomeExibido}</SubTitle>
@@ -165,6 +167,7 @@ export const Profile = () => {
             <Pen size={24} color={COLORS.PURPLEDARK1} />
           </TouchableOpacity>
         </Header>
+
         {editando && (
           <FlatList
             data={avatarOptions}
@@ -195,10 +198,23 @@ export const Profile = () => {
 
           <Title>Descrição</Title>
           {editando ? (
-            <EditableInputDescription
-              value={descricao}
-              onChangeText={setDescricao}
-            />
+            <TouchableOpacity
+              onPress={() => setModalDescricaoVisivel(true)}
+              style={{
+              
+               
+              }}
+            >
+              <InputInfo 
+              numberOfLines={3} 
+              style={
+                { color: COLORS.GRAY1,  
+                borderWidth: 1,
+                borderColor: COLORS.PURPLEDARK1
+                }}>
+                {descricao || "Toque para editar..."}
+              </InputInfo>
+            </TouchableOpacity>
           ) : (
             <InputInfo>{descricao}</InputInfo>
           )}
@@ -226,6 +242,57 @@ export const Profile = () => {
           </ContainerButton>
         )}
       </Container>
+
+      <Modal
+        visible={modalDescricaoVisivel}
+        animationType="slide"
+        transparent={true}
+      >
+        <View
+          style={{
+           flex: 1,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 20,
+            paddingBottom: 400
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              borderRadius: 10,
+              width: "100%",
+              padding: 20,
+            }}
+          >
+            <Title style={{ marginBottom: 10 }}>Editar Descrição</Title>
+            <TextInput
+              value={descricao}
+              onChangeText={setDescricao}
+              multiline
+              numberOfLines={6}
+              style={{
+                borderWidth: 1,
+                borderColor: COLORS.GRAY2,
+                borderRadius: 8,
+                padding: 10,
+                textAlignVertical: "top",
+                minHeight: 100,
+                marginBottom: 20,
+              }}
+              autoFocus
+            />
+            <Button
+              onPress={() => {
+                setModalDescricaoVisivel(false);
+              }}
+            >
+              <ButtonText>Salvar</ButtonText>
+            </Button>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };

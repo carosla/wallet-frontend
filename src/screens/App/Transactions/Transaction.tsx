@@ -156,7 +156,7 @@ export const Transaction = () => {
                 <td>${t.descricao}</td>
                 <td>${t.tipo_transacao.transacao}</td>
                 <td>${t.categorium?.categoria || "Sem categoria"}</td>
-                <td>${t.valor.toFixed(2)}</td>
+                <td>${typeof t.valor === 'number' ? t.valor.toFixed(2).replace('.', ',') : '0.00'}</td>
                 <td>${dayjs(t.data).format("DD/MM/YYYY")}</td>
               </tr>
             `).join("")}
@@ -307,7 +307,7 @@ export const Transaction = () => {
                         : theme.COLORS.RED,
                   }}
                 >
-                  R$ {item.valor.toFixed(2)}
+                  R$ {typeof item.valor === 'number' ? item.valor.toFixed(2) : '0.00'}
                 </AmountTransaction>
 
                 <TouchableOpacity
