@@ -10,15 +10,16 @@ import {
 } from "react-native";
 import {
   CaretDoubleLeft,
-  Trash,
-  Calendar,
+  TrashSimple,
   CaretDown,
-  TrashSimple
+  FileArrowDown,
 } from "phosphor-react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import dayjs from "dayjs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
 
 import { Header } from "../../../components/Header/Header";
 import {
@@ -55,31 +56,20 @@ export const Transaction = () => {
   const [modalVisivel, setModalVisivel] = useState(false);
 
   const meses = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
   ];
 
   const [mesSelecionado, setMesSelecionado] = useState(() => {
-  const mesAtual = dayjs().month(); // 0 a 11
-  return meses[mesAtual]; // Ex: "Julho"
-});
-
+    const mesAtual = dayjs().month(); // 0 a 11
+    return meses[mesAtual];
+  });
 
   const obterNumeroDoMes = (mes: string): string => {
     const index = meses.findIndex(
       (nome) => nome.toLowerCase() === mes.toLowerCase()
     );
-    return String(index + 1).padStart(2, "0"); // "01" a "12"
+    return String(index + 1).padStart(2, "0");
   };
 
   const fetchTransactions = async () => {
@@ -89,10 +79,7 @@ export const Transaction = () => {
       const response = await axios.get(`${API_URL}/api/transacao`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data: Transaction[] = Array.isArray(response.data)
-        ? response.data
-        : [];
-
+      const data: Transaction[] = Array.isArray(response.data) ? response.data : [];
       setAllTransactions(data);
     } catch (error) {
       console.error("Erro ao buscar transações:", error);
@@ -142,6 +129,50 @@ export const Transaction = () => {
     }
   };
 
+  const exportarRelatorioPDF = async () => {
+    const html = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #700298ff; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background-color: #f3f4f6; }
+          </style>
+        </head>
+        <body>
+          <h1>Relatório de Transações - ${mesSelecionado}</h1>
+          <table>
+            <tr>
+              <th>Descrição</th>
+              <th>Tipo</th>
+              <th>Categoria</th>
+              <th>Valor (R$)</th>
+              <th>Data</th>
+            </tr>
+            ${filteredTransactions.map(t => `
+              <tr>
+                <td>${t.descricao}</td>
+                <td>${t.tipo_transacao.transacao}</td>
+                <td>${t.categorium?.categoria || "Sem categoria"}</td>
+                <td>${t.valor.toFixed(2)}</td>
+                <td>${dayjs(t.data).format("DD/MM/YYYY")}</td>
+              </tr>
+            `).join("")}
+          </table>
+        </body>
+      </html>
+    `;
+    try {
+      const { uri } = await Print.printToFileAsync({ html });
+      await Sharing.shareAsync(uri);
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível exportar o PDF.");
+      console.error(error);
+    }
+  };
+
   if (loading) {
     return <ActivityIndicator size="large" color="#000" />;
   }
@@ -150,16 +181,16 @@ export const Transaction = () => {
     <>
       <Header iconLeft typeTransaction appName="Minhas Transações" />
       <Container>
-        {/* Seletor de Mês */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 10,
-            marginBottom: 20,
-          }}
-        >
+
+        {/* Filtros e botão de exportação */}
+        <View style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginHorizontal: 16,
+          marginTop: 10,
+          marginBottom: 20
+        }}>
           <TouchableOpacity
             style={{
               flexDirection: "row",
@@ -175,6 +206,21 @@ export const Transaction = () => {
               {mesSelecionado}
             </Text>
             <CaretDown color="#000" size={16} style={{ marginLeft: 6 }} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={exportarRelatorioPDF}
+            style={{
+              flexDirection: "row",
+              backgroundColor: theme.COLORS.PURPLEDARK1,
+              paddingVertical: 6,
+              paddingHorizontal: 12,
+              borderRadius: 20,
+              alignItems: "center",
+            }}
+          >
+            <FileArrowDown color="#fff" size={20} />
+            <Text style={{ color: "#fff", marginLeft: 8 }}>Exportar</Text>
           </TouchableOpacity>
         </View>
 
