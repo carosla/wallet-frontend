@@ -162,8 +162,10 @@ export const Despesa = styled(ResumoValue)`
 export const Saldo = styled(ResumoValue)``;
 
 export const ReloadButton = styled.TouchableOpacity`
+  align-items: center;
   background-color: #f0f0f0;
   padding: 5px;
   border-radius: 50px;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.GRAY5};
+  background-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.COLORS.GRAY5};
 `;

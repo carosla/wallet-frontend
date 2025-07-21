@@ -33,7 +33,6 @@ export const Transacao = () => {
   const navigation = useNavigation();
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
-  const [data, setData] = useState("");
   const [categorias, setCategorias] = useState<{ label: string; value: string }[]>([]);
   const [selectedCategoria, setSelectedCategoria] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -42,23 +41,20 @@ export const Transacao = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const formatDate = (date: Date) => {
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
-
-  const convertDateToTimestamp = (date: string) => {
-    const [day, month, year] = date.split("-");
-    return `${year}-${month}-${day}`;
+    return date.toLocaleDateString("pt-BR"); // exemplo: 20/07/2025
   };
 
   const handleDateChange = (event: any, selected?: Date) => {
-    setShowDatePicker(false);
+    if (event.type === "dismissed") {
+      setShowDatePicker(false);
+      return;
+    }
+
     if (selected) {
       setSelectedDate(selected);
-      setData(formatDate(selected));
     }
+
+    setShowDatePicker(false);
   };
 
   useEffect(() => {
@@ -93,7 +89,7 @@ export const Transacao = () => {
   }, [token]);
 
   const handleSendData = async () => {
-    const formattedDate = convertDateToTimestamp(data);
+    const formattedDate = selectedDate.toISOString().split("T")[0]; // yyyy-mm-dd
 
     try {
       const response = await axios.post(
@@ -198,7 +194,7 @@ export const Transacao = () => {
                 fontFamily: theme.FONTS.POPPINSREGULAR,
               }}
             >
-              {data || "Selecione a data"}
+              {formatDate(selectedDate)}
             </Text>
             <Calendar size={20} color="#888" />
           </TouchableOpacity>

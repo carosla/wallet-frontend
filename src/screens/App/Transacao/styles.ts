@@ -53,7 +53,7 @@ export const Input = styled.TextInput`
 
 export const Button = styled.TouchableOpacity`
   width: 280px;
-  height: 60px;
+  height: 55px;
   background-color: ${({ theme }: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
   justify-content: center;
   align-items: center;

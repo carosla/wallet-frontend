@@ -21,7 +21,6 @@ export const Row = styled.View`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 10px;
 `;
 
 export const InfoContainer = styled.View`
@@ -49,8 +48,7 @@ export const ContainerAtributos = styled.View`
   justify-content: center;
   align-items: center;
   font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSBOLD};
-  margin-top: 50px;
-
+  margin-top: 20px;
 `;
 
 export const ContainerButton = styled.View`
@@ -71,11 +69,21 @@ export const EditableInput = styled.TextInput`
     width: 200px;
 `;
 
+export const EditableInputDescription = styled.TextInput`
+    border: 1px solid ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.PURPLEDARK1};
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.BLACK};
+    margin-bottom: 10px;
+    background-color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE};
+    width: 300px;
+`;
+
 import { Pressable } from 'react-native';
 import styled, { DefaultTheme } from 'styled-components/native';
 
 export const Container = styled.View`
-  flex: 1;
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -142,6 +150,7 @@ export const Title = styled.Text`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.BLACK};
   margin-bottom: 4px;
 `;
+
 
 export const SubTitle = styled.Text`
   font-family: "Poppins-Medium";

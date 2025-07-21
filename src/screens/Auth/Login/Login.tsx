@@ -69,7 +69,7 @@ const Login: React.FC = () => {
           </ContentHeader>
 
           <ContentBody>
-            {error && <Text style={{ color: "red" }}>{error}</Text>}{" "}
+            {error && <Text style={{ color: "red" }}>{error}</Text>}
             {/* Exibir erro se houver */}
             <Input
               leftIcon
@@ -98,11 +98,11 @@ const Login: React.FC = () => {
               onChangeText={setSenha} // Atualizar o estado com a senha digitada
             />
             <ContentForgotPassword>
-              <ContentButtonForgotPassword onPress={handleRecuperarSenha}>
+              {/*<ContentButtonForgotPassword onPress={handleRecuperarSenha}>
                 <ContentTitleForgotPassword>
                   Recuperar Senha
                 </ContentTitleForgotPassword>
-              </ContentButtonForgotPassword>
+              </ContentButtonForgotPassword>*/}
             </ContentForgotPassword>
             <ButtonPersonalizado
               title="Entrar"

@@ -11,9 +11,8 @@ import {
   ContainerHeader,
   ButtonGoBack,
 } from "./styles";
-import { Calendar, Pen } from "phosphor-react-native";
+import { Calendar, Pen, CaretDoubleLeft } from "phosphor-react-native";
 import { Text, Alert, TouchableOpacity, View, Modal } from "react-native";
-import { CaretDoubleLeft } from "phosphor-react-native";
 import InputDescricao from "../../../components/Input_Descricao";
 import InputValor from "../../../components/Input_Valor";
 import COLORS from "../../../styles/theme";
@@ -28,7 +27,6 @@ export const Recebimentos = () => {
   const navigation = useNavigation();
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
-  const [data, setData] = useState(""); // string formatada para exibir
   const [categorias, setCategorias] = useState<
     { label: string; value: string }[]
   >([]);
@@ -41,26 +39,21 @@ export const Recebimentos = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // Função para formatar data para exibição (dd-mm-yyyy)
   const formatDate = (date: Date) => {
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
-
-  // Converte para yyyy-mm-dd antes de enviar
-  const convertDateToTimestamp = (date: string) => {
-    const [day, month, year] = date.split("-");
-    return `${year}-${month}-${day}`;
+    return date.toLocaleDateString("pt-BR");
   };
 
   const handleDateChange = (event: any, selected?: Date) => {
-    setShowDatePicker(false);
+    if (event.type === "dismissed") {
+      setShowDatePicker(false);
+      return;
+    }
+
     if (selected) {
       setSelectedDate(selected);
-      setData(formatDate(selected));
     }
+
+    setShowDatePicker(false);
   };
 
   useEffect(() => {
@@ -95,7 +88,7 @@ export const Recebimentos = () => {
   }, [token]);
 
   const handleSendData = async () => {
-    const formattedDate = convertDateToTimestamp(data);
+    const formattedDate = selectedDate.toISOString().split("T")[0]; // yyyy-mm-dd
 
     try {
       const response = await axios.post(
@@ -200,7 +193,7 @@ export const Recebimentos = () => {
                 fontFamily: theme.FONTS.POPPINSREGULAR,
               }}
             >
-              {data || "Selecione a data"}
+              {formatDate(selectedDate)}
             </Text>
             <Calendar size={20} color="#888" />
           </TouchableOpacity>
@@ -210,7 +203,7 @@ export const Recebimentos = () => {
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "rgba(51, 51, 52, 0.68)", 
+                  backgroundColor: "rgba(51, 51, 52, 0.68)",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -218,7 +211,7 @@ export const Recebimentos = () => {
                 <DateTimePicker
                   value={selectedDate}
                   mode="date"
-                  display="inline" 
+                  display="inline"
                   onChange={handleDateChange}
                   accentColor={theme.COLORS.PURPLEDARK1}
                 />

@@ -280,11 +280,12 @@ export const Relatorio = () => {
             flexDirection: "row",
             justifyContent: "space-between",
             marginTop: 30,
+            alignItems: "center"
           }}
         >
           <SubHeader>Distribuição de Gastos</SubHeader>
           <ReloadButton onPress={fetchTransacoes}>
-            <ArrowsClockwise size={20} color="black" />
+            <ArrowsClockwise size={15} color="black" />
           </ReloadButton>
         </View>
       <ChartWrapper>      
