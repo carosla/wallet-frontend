@@ -18,7 +18,6 @@ export const ContentHeader = styled.View`
 
 export const ContentBody = styled.View`
     margin-bottom: 20px;
-
 `;
 
 export const ViewButton = styled.View`
@@ -81,4 +80,10 @@ export const ContentTitleForgotPassword = styled.Text`
     color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY3};
     font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSREGULAR};
 
+`;
+
+export const Logo = styled.Image`
+  width: 120px;
+  height: 120px;
+  margin-top: 100px
 `;

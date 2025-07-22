@@ -20,6 +20,7 @@ import {
   ContentForgotPassword,
   ContentButtonForgotPassword,
   ContentTitleForgotPassword,
+  Logo,
 } from "./styles";
 import { ButtonPersonalizado } from "@src/components/ButtonPersonalizado";
 import { useNavigation } from "@react-navigation/native";
@@ -64,8 +65,9 @@ const Login: React.FC = () => {
     <KeyboardAvoidingView behavior="position" enabled>
       <Container>
         <ScrollView showsVerticalScrollIndicator={false}>
+          
           <ContentHeader>
-            <Title>Seja bem vindo(a) {"\n"} a App Carteira</Title>
+            <Logo source={require('../../../assets/logo/logo.png')} resizeMode="contain" />
           </ContentHeader>
 
           <ContentBody>

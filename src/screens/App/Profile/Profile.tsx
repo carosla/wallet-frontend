@@ -255,7 +255,7 @@ export const Profile = () => {
             justifyContent: "center",
             alignItems: "center",
             paddingHorizontal: 20,
-            paddingBottom: 400
+            paddingBottom: 350
           }}
         >
           <View
