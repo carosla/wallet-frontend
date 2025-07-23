@@ -16,10 +16,16 @@ import {
 } from "phosphor-react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import dayjs from "dayjs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 import { Header } from "../../../components/Header/Header";
 import {
@@ -130,48 +136,49 @@ export const Transaction = () => {
   };
 
   const exportarRelatorioPDF = async () => {
-    const html = `
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h1 { color: #700298ff; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-            th { background-color: #f3f4f6; }
-          </style>
-        </head>
-        <body>
-          <h1>Relatório de Transações - ${mesSelecionado}</h1>
-          <table>
+  const html = `
+    <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          h1 { color: #700298ff; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+          th { background-color: #f3f4f6; }
+        </style>
+      </head>
+      <body>
+        <h1>Relatório de Transações - ${mesSelecionado}</h1>
+        <table>
+          <tr>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Categoria</th>
+            <th>Valor (R$)</th>
+            <th>Data</th>
+          </tr>
+          ${filteredTransactions.map(t => `
             <tr>
-              <th>Descrição</th>
-              <th>Tipo</th>
-              <th>Categoria</th>
-              <th>Valor (R$)</th>
-              <th>Data</th>
+              <td>${t.descricao}</td>
+              <td>${t.tipo_transacao.transacao}</td>
+              <td>${t.categorium?.categoria || "Sem categoria"}</td>
+              <td>${typeof t.valor === 'number' ? t.valor.toFixed(2).replace('.', ',') : '0.00'}</td>
+              <td>${dayjs.utc(t.data).tz("America/Sao_Paulo").format("DD/MM/YYYY")}</td>
             </tr>
-            ${filteredTransactions.map(t => `
-              <tr>
-                <td>${t.descricao}</td>
-                <td>${t.tipo_transacao.transacao}</td>
-                <td>${t.categorium?.categoria || "Sem categoria"}</td>
-                <td>${typeof t.valor === 'number' ? t.valor.toFixed(2).replace('.', ',') : '0.00'}</td>
-                <td>${dayjs(t.data).format("DD/MM/YYYY")}</td>
-              </tr>
-            `).join("")}
-          </table>
-        </body>
-      </html>
-    `;
-    try {
-      const { uri } = await Print.printToFileAsync({ html });
-      await Sharing.shareAsync(uri);
-    } catch (error) {
-      Alert.alert("Erro", "Não foi possível exportar o PDF.");
-      console.error(error);
-    }
-  };
+          `).join("")}
+        </table>
+      </body>
+    </html>
+  `;
+  try {
+    const { uri } = await Print.printToFileAsync({ html });
+    await Sharing.shareAsync(uri);
+  } catch (error) {
+    Alert.alert("Erro", "Não foi possível exportar o PDF.");
+    console.error(error);
+  }
+};
+
 
   if (loading) {
     return <ActivityIndicator size="large" color="#000" />;
