@@ -10,14 +10,14 @@ export const ContentHeader = styled.View`
     width: 100%;
     margin-left: -10px;
     margin-top: 40px;
-    margin-bottom: 90px;
     align-items: center;
     justify-content: space-between;
-    margin-top: 100px;
+    margin-top: 15%;
 `;
 
 export const ContentBody = styled.View`
     margin-bottom: 20px;
+    margin-top: 15px
 `;
 
 export const ViewButton = styled.View`
@@ -83,7 +83,7 @@ export const ContentTitleForgotPassword = styled.Text`
 `;
 
 export const Logo = styled.Image`
-  width: 120px;
-  height: 120px;
-  margin-top: 100px
+  width: 200px;
+  height: 180px;
+  margin-top: 60px
 `;

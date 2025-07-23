@@ -17,6 +17,7 @@ import {
     ButtonFooter,
     Title1,
     Title2,
+    Logo,
 } from "./styles";
 
 export const Cadastro = () => {
@@ -47,7 +48,7 @@ export const Cadastro = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <ContentHeader>
-                    <Description>CADASTRO</Description>
+                    <Logo source={require('../../../assets/logo/logo_grow_3.png')} resizeMode="contain" />
                 </ContentHeader>
 
                 <ContentBody>

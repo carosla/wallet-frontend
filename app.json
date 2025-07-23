@@ -1,8 +1,15 @@
 {
   "expo": {
-    "name": "wallet-app",
-    "slug": "wallet-app",
+    "name": "grow finance",
+    "slug": "grow finance",
+    "orientation": "portrait",
+    "icon": "./src/assets/splash/icon_3.png",
     "version": "1.0.0",
+    "splash": {
+      "image": "./src/assets/splash/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2F1155"
+    },
     "plugins": [
       "expo-font"
     ]

@@ -3,7 +3,7 @@ import styled, { DefaultTheme } from 'styled-components/native';
 
 export const Container = styled.View`
     padding: 20px;
-    margin-top: 30%;
+    margin-top: 15%;
 `;
 
 export const ContentHeader = styled.View`
@@ -54,4 +54,10 @@ export const Title2 = styled.Text`
     margin-left: 10px;
     color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.PURPLEDARK1};
     font-family: ${({theme}: {theme: DefaultTheme}) => theme.FONTS.POPPINSBOLD};
+`;
+
+export const Logo = styled.Image`
+  width: 200px;
+  height: 180px;
+  margin-top: 60px
 `;

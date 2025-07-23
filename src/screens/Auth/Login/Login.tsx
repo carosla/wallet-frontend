@@ -67,7 +67,7 @@ const Login: React.FC = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           
           <ContentHeader>
-            <Logo source={require('../../../assets/logo/logo.png')} resizeMode="contain" />
+            <Logo source={require('../../../assets/logo/logo_grow_3.png')} resizeMode="contain" />
           </ContentHeader>
 
           <ContentBody>

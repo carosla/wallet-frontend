@@ -52,7 +52,8 @@
     "victory-pie": "^37.3.6",
     "expo-sharing": "~13.1.5",
     "expo-file-system": "~18.1.11",
-    "expo-print": "~14.1.4"
+    "expo-print": "~14.1.4",
+    "expo-splash-screen": "~0.30.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
