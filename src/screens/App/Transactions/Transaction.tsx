@@ -157,15 +157,17 @@ export const Transaction = () => {
             <th>Valor (R$)</th>
             <th>Data</th>
           </tr>
-          ${filteredTransactions.map(t => `
-            <tr>
-              <td>${t.descricao}</td>
-              <td>${t.tipo_transacao.transacao}</td>
-              <td>${t.categorium?.categoria || "Sem categoria"}</td>
-              <td>${typeof t.valor === 'number' ? t.valor.toFixed(2).replace('.', ',') : '0.00'}</td>
-              <td>${dayjs.utc(t.data).tz("America/Sao_Paulo").format("DD/MM/YYYY")}</td>
-            </tr>
-          `).join("")}
+          ${[...filteredTransactions]
+            .sort((a, b) => dayjs(b.data).valueOf() - dayjs(a.data).valueOf()) // Mais recente para mais antiga
+            .map(t => `
+              <tr>
+                <td>${t.descricao}</td>
+                <td>${t.tipo_transacao.transacao}</td>
+                <td>${t.categorium?.categoria || "Sem categoria"}</td>
+                <td>${typeof t.valor === 'number' ? t.valor.toFixed(2).replace('.', ',') : '0.00'}</td>
+                <td>${dayjs.utc(t.data).tz("America/Sao_Paulo").format("DD/MM/YYYY")}</td>
+              </tr>
+            `).join("")}
         </table>
       </body>
     </html>
@@ -178,6 +180,7 @@ export const Transaction = () => {
     console.error(error);
   }
 };
+
 
 
   if (loading) {
