@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "grow finance",
-    "slug": "grow finance",
+    "slug": "grow-finance",
     "orientation": "portrait",
     "icon": "./src/assets/splash/icon_3.png",
     "version": "1.0.0",
@@ -12,6 +12,11 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ebc7ae5e-d369-48e4-9863-ac4f03b54d6a"
+      }
+    }
   }
 }
