@@ -17,6 +17,9 @@
       "eas": {
         "projectId": "ebc7ae5e-d369-48e4-9863-ac4f03b54d6a"
       }
+    },
+    "android": {
+      "package": "com.carol.growfinance"
     }
   }
 }
